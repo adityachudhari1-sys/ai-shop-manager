@@ -1,229 +1,108 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Shop Manager</title>
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Shop Manager V2</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:#f5f7fb;color:#172033}
-header{background:#111827;color:#fff;padding:20px 16px;position:sticky;top:0;z-index:5}
-header h1{margin:0;font-size:24px}header p{margin:5px 0 0;color:#cbd5e1}
-main{max-width:980px;margin:auto;padding:16px}
-nav{display:flex;gap:8px;overflow:auto;margin-bottom:14px}
-nav button{width:auto;min-width:110px;margin:0}
-button{border:0;border-radius:11px;padding:12px 15px;background:#111827;color:#fff;font-size:15px;cursor:pointer}
-button.secondary{background:#475569}button.success{background:#166534}
-input,select,textarea{width:100%;padding:12px;border:1px solid #d5dbe5;border-radius:11px;font-size:15px;background:#fff}
-.card{background:#fff;border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 3px 14px #0000000d}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
-.stat{font-size:27px;font-weight:750;margin-top:6px}.muted{color:#64748b;font-size:13px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.item{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid #edf0f4}
-.badge{display:inline-block;padding:4px 8px;border-radius:20px;font-size:12px;background:#fee2e2;color:#991b1b}
-section{display:none}section.active{display:block}
-#aiOutput{white-space:pre-wrap;background:#f8fafc;border-radius:11px;padding:13px;margin-top:10px;min-height:50px}
-.hero{text-align:center;padding:24px 12px}.hero h2{font-size:30px;margin:5px 0}.hero p{color:#64748b}
-@media(max-width:600px){.row{grid-template-columns:1fr}.hero h2{font-size:25px}}
-</style>
-</head>
-<body>
-<header>
-  <h1>🏪 AI Shop Manager</h1>
-  <p>Run your shop by typing or speaking</p>
-</header>
-
-<main>
-<nav>
-  <button onclick="showTab('dashboard')">📊 Dashboard</button>
-  <button onclick="showTab('assistant')">🤖 AI Assistant</button>
-  <button onclick="showTab('stock')">📦 Stock</button>
-  <button onclick="showTab('customers')">👥 Customers</button>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f6fb;color:#172033}
+header{background:#111827;color:white;padding:16px;position:sticky;top:0;z-index:5}header h1{margin:0;font-size:22px}header p{margin:5px 0 0;color:#cbd5e1;font-size:13px}
+main{max-width:1100px;margin:auto;padding:14px}nav{display:flex;gap:7px;overflow:auto;margin-bottom:14px;padding:5px 0;background:#f3f6fb;position:sticky;top:70px;z-index:4}nav button{width:auto;white-space:nowrap;margin:0}
+button{border:0;border-radius:10px;padding:11px 14px;background:#111827;color:#fff;font-size:14px;cursor:pointer}.green{background:#166534}.blue{background:#1d4ed8}.orange{background:#92400e}.light{background:#e2e8f0;color:#172033}
+.card{background:white;border-radius:15px;padding:16px;margin-bottom:13px;box-shadow:0 3px 14px #0000000d}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:11px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #d5dbe5;border-radius:10px;font-size:14px;background:#fff}button.full{width:100%;margin-top:8px}.stat{font-size:26px;font-weight:800;margin-top:5px}.muted{color:#64748b;font-size:12px}.item{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid #edf0f4}
+.badge{display:inline-block;padding:4px 8px;border-radius:20px;font-size:11px;background:#fee2e2;color:#991b1b}.ok{background:#dcfce7;color:#166534}section{display:none}section.active{display:block}
+#aiOutput{white-space:pre-wrap;background:#f8fafc;border-radius:10px;padding:12px;margin-top:10px;min-height:55px}.hero{text-align:center;padding:25px 10px}.hero h2{font-size:29px;margin:4px 0}.bar{height:17px;border-radius:8px;background:#dbe4f0;overflow:hidden}.bar i{display:block;height:100%;background:#1d4ed8}
+@media(max-width:600px){.row,.row3{grid-template-columns:1fr}.hero h2{font-size:24px}}
+</style></head><body>
+<header><h1>🏪 AI Shop Manager</h1><p>Speak • Sell • Track Stock • Manage Udhar • Understand Your Business</p></header>
+<main><nav>
+<button onclick="tab('dashboard')">📊 Dashboard</button><button onclick="tab('assistant')">🤖 AI Assistant</button>
+<button onclick="tab('stock')">📦 Stock</button><button onclick="tab('customers')">👥 Udhar</button>
+<button onclick="tab('billing')">🧾 Billing</button><button onclick="tab('analytics')">📈 Analytics</button><button onclick="tab('settings')">⚙️ Settings</button>
 </nav>
 
 <section id="dashboard" class="active">
-  <div class="card hero">
-    <h2>Simple shop management</h2>
-    <p>Record sales, manage stock and track customer payments.</p>
-  </div>
-
-  <div class="grid">
-    <div class="card"><div class="muted">Today's Sales</div><div class="stat" id="sales">₹0</div></div>
-    <div class="card"><div class="muted">Orders</div><div class="stat" id="orders">0</div></div>
-    <div class="card"><div class="muted">Pending Payments</div><div class="stat" id="pending">₹0</div></div>
-    <div class="card"><div class="muted">Low Stock</div><div class="stat" id="low">0</div></div>
-  </div>
-
-  <div class="card">
-    <h3>Quick Sale</h3>
-    <div class="row">
-      <select id="productSelect"></select>
-      <input id="quantity" type="number" min="1" value="1">
-    </div>
-    <button class="success" onclick="quickSale()">Record Sale</button>
-  </div>
+<div class="card hero"><h2>दुकानाचा हिशोब फक्त बोलून सांभाळा</h2><p class="muted">Type किंवा Speak करा — demo shop data लगेच update होतो.</p></div>
+<div class="grid"><div class="card"><div class="muted">Today's Sales</div><div class="stat" id="sales">₹0</div></div>
+<div class="card"><div class="muted">Orders</div><div class="stat" id="orders">0</div></div>
+<div class="card"><div class="muted">Pending Udhar</div><div class="stat" id="pending">₹0</div></div>
+<div class="card"><div class="muted">Low Stock</div><div class="stat" id="low">0</div></div></div>
+<div class="card"><h3>⚡ Quick Sale</h3><div class="row"><select id="qp"></select><input id="qq" type="number" min="1" value="1"></div><button class="green full" onclick="quickSale()">Record Sale</button></div>
+<div class="card"><h3>🔔 Smart Alerts</h3><div id="alerts"></div></div>
 </section>
 
-<section id="assistant">
-  <div class="card">
-    <h3>🤖 AI Shop Assistant</h3>
-    <p class="muted">Examples: “10 soap sold”, “Ramesh paid 500”, “Ramesh borrowed 2000”, “show stock”.</p>
-    <textarea id="command" rows="4" placeholder="Type your command in English, Hindi or Marathi..."></textarea>
-    <div class="row">
-      <button onclick="startVoice()">🎤 Speak</button>
-      <button onclick="processCommand()">Process</button>
-    </div>
-    <div id="aiOutput">Ready.</div>
-  </div>
-</section>
+<section id="assistant"><div class="card"><h3>🤖 AI Shop Assistant</h3>
+<p class="muted">Examples: “10 soap sold”, “Ramesh paid 500”, “Ramesh borrowed 2000”, “show stock”, “आजचा report”.</p>
+<textarea id="cmd" rows="4" placeholder="Type or speak your shop instruction..."></textarea>
+<div class="row"><button class="blue" onclick="voice()">🎤 Speak</button><button onclick="process()">⚡ Process</button></div><div id="aiOutput">Ready.</div></div>
+<div class="card"><h3>💡 Quick Commands</h3><div class="grid">
+<button class="light" onclick="put('10 soap sold')">10 soap sold</button><button class="light" onclick="put('Ramesh paid 500')">Ramesh paid 500</button>
+<button class="light" onclick="put('Ramesh borrowed 2000')">Ramesh borrowed 2000</button><button class="light" onclick="put('show stock')">Show stock</button>
+<button class="light" onclick="put('आजचा report')">आजचा report</button><button class="light" onclick="put('profit report')">Profit report</button>
+</div></div></section>
 
-<section id="stock">
-  <div class="card">
-    <h3>📦 Stock</h3>
-    <div id="stockList"></div>
-  </div>
-</section>
+<section id="stock"><div class="card"><h3>📦 Inventory</h3><div id="stockList"></div></div>
+<div class="card"><h3>➕ Add Product</h3><div class="row3"><input id="pn" placeholder="Product name"><input id="ps" type="number" min="0" placeholder="Stock"><input id="pp" type="number" min="0" placeholder="Selling price ₹"></div><button class="green full" onclick="addProduct()">Add Product</button></div>
+<div class="card"><h3>📥 Add Stock</h3><div class="row"><select id="sp"></select><input id="sq" type="number" min="1" placeholder="Quantity"></div><button class="blue full" onclick="addStock()">Add Stock</button></div></section>
 
-<section id="customers">
-  <div class="card">
-    <h3>👥 Customers & Payments</h3>
-    <div id="customerList"></div>
-    <hr>
-    <h4>Add customer / pending amount</h4>
-    <div class="row">
-      <input id="customerName" placeholder="Customer name">
-      <input id="customerPending" type="number" min="0" placeholder="Pending ₹">
-    </div>
-    <button onclick="saveCustomer()">Save Customer</button>
-  </div>
-</section>
+<section id="customers"><div class="card"><h3>👥 Customer Udhar / Ledger</h3><div id="customersList"></div></div>
+<div class="card"><h3>➕ Add / Update Customer</h3><div class="row"><input id="cn" placeholder="Customer name"><input id="cu" type="number" min="0" placeholder="Pending ₹"></div><button class="full" onclick="customer()">Save Customer</button></div>
+<div class="card"><h3>💵 Record Payment</h3><div class="row"><select id="pc"></select><input id="pa" type="number" min="1" placeholder="Payment ₹"></div><button class="green full" onclick="payment()">Record Payment</button></div></section>
+
+<section id="billing"><div class="card"><h3>🧾 Digital Bill</h3><div class="row"><select id="bp"></select><input id="bq" type="number" min="1" value="1"></div><button class="blue full" onclick="bill()">Generate Bill</button><div id="billout"></div></div>
+<div class="card"><h3>🧾 Recent Transactions</h3><div id="tx"></div></div></section>
+
+<section id="analytics"><div class="card"><h3>📈 Business Analytics</h3><div class="grid">
+<div><div class="muted">Revenue</div><div class="stat" id="rev">₹0</div></div><div><div class="muted">Estimated Profit</div><div class="stat" id="prof">₹0</div></div><div><div class="muted">Average Order</div><div class="stat" id="avg">₹0</div></div></div></div>
+<div class="card"><h3>🏆 Best Selling Products</h3><div id="best"></div></div><div class="card"><h3>🤖 AI Business Advice</h3><div id="advice"></div></div></section>
+
+<section id="settings"><div class="card"><h3>⚙️ Shop Settings</h3><div class="row"><input id="shop" placeholder="Shop name"><select id="lang"><option>Marathi</option><option>Hindi</option><option>English</option></select></div><button class="full" onclick="settings()">Save Settings</button></div>
+<div class="card"><h3>💾 Data Backup</h3><button class="blue" onclick="exportData()">⬇️ Export Backup</button> <button class="light" onclick="document.getElementById('file').click()">⬆️ Import</button><input id="file" type="file" accept=".json" style="display:none" onchange="importData(event)"><button class="orange full" onclick="resetData()">Reset Demo Data</button><p class="muted">This V2 is still a browser demo using localStorage. Real cloud login/database and a real AI API come next.</p></div></section>
 </main>
 
 <script>
-const KEY="aiShopManagerDataV1";
-let data=JSON.parse(localStorage.getItem(KEY))||{
- sales:0,orders:0,
- products:[
-  {name:"Soap",stock:30,price:40},
-  {name:"Shampoo",stock:15,price:120},
-  {name:"Rice",stock:50,price:60},
-  {name:"Oil",stock:10,price:150}
- ],
- customers:[
-  {name:"Ramesh",pending:2000},
-  {name:"Suresh",pending:500}
- ]
-};
-
-function save(){localStorage.setItem(KEY,JSON.stringify(data));render();}
-function money(n){return "₹"+Math.round(n).toLocaleString("en-IN");}
-
+const KEY='aiShopManagerV2';
+const initial={shopName:'My Shop',language:'Marathi',sales:0,orders:0,products:[
+{name:'Soap',stock:30,price:40,cost:25,sold:0},{name:'Shampoo',stock:15,price:120,cost:75},{name:'Rice',stock:50,price:60,cost:45},{name:'Oil',stock:10,price:150,cost:120,sold:0}],
+customers:[{name:'Ramesh',pending:2000},{name:'Suresh',pending:500}],transactions:[]};
+let d=JSON.parse(localStorage.getItem(KEY))||initial;
+function save(){localStorage.setItem(KEY,JSON.stringify(d));render()} function money(n){return '₹'+Math.round(n||0).toLocaleString('en-IN')}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function tab(x){document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));document.getElementById(x).classList.add('active');render()}
+function put(x){document.getElementById('cmd').value=x;tab('assistant')}
+function product(n){return d.products.find(p=>p.name.toLowerCase()==n.toLowerCase())||d.products.find(p=>p.name.toLowerCase().includes(n.toLowerCase()))}
+function customerBy(n){return d.customers.find(c=>c.name.toLowerCase()==n.toLowerCase())}
+function sell(p,q){if(!p)return '❌ Product not found.';if(q<1)return '❌ Invalid quantity.';if(q>p.stock)return `❌ Only ${p.stock} ${p.name} left.`;p.stock-=q;p.sold=(p.sold||0)+q;d.sales+=q*p.price;d.orders++;d.transactions.unshift({type:'Sale',text:q+' '+p.name,amount:q*p.price,time:new Date().toLocaleString()});save();return `✅ ${q} ${p.name} sold.\nSale: ${money(q*p.price)}\nStock left: ${p.stock}`}
+function quickSale(){let p=d.products[+document.getElementById('qp').value];alert(sell(p,+document.getElementById('qq').value))}
+function process(){let r=document.getElementById('cmd').value.trim(),m,msg='';if(!r)return;
+m=r.match(/(\d+)\s*([a-zA-Z]+).*sold/i);if(m)msg=sell(product(m[2]),+m[1]);
+else if(m=r.match(/([A-Za-z]+)\s*(?:paid|gave)\s*(?:₹|rs\.?|rupees)?\s*(\d+)/i)){let c=customerBy(m[1]),a=+m[2];if(!c)msg='❌ Customer not found.';else{c.pending=Math.max(0,c.pending-a);d.transactions.unshift({type:'Payment',text:c.name+' paid',amount:a,time:new Date().toLocaleString()});save();msg=`✅ ${c.name} paid ${money(a)}.\nPending: ${money(c.pending)}`}}
+else if(m=r.match(/([A-Za-z]+).*?(borrowed|owes|udhaar|उधार).*?(\d+)/i)){let c=customerBy(m[1]);let a=+m[3];if(!c){c={name:m[1][0].toUpperCase()+m[1].slice(1),pending:0};d.customers.push(c)}c.pending+=a;d.transactions.unshift({type:'Udhar',text:c.name+' borrowed',amount:a,time:new Date().toLocaleString()});save();msg=`✅ ${c.name} pending is now ${money(c.pending)}.`}
+else if(/stock|साठा|शिल्लक|स्टॉक/i.test(r))msg=d.products.map(p=>p.name+': '+p.stock).join('\n');
+else if(/report|विक्री|sales|आज/i.test(r))msg=`📊 Shop Report\nSales: ${money(d.sales)}\nOrders: ${d.orders}\nPending: ${money(d.customers.reduce((s,c)=>s+c.pending,0))}\nLow stock: ${d.products.filter(p=>p.stock<=10).length}`;
+else if(/profit|नफा/i.test(r)){let p=d.products.reduce((s,x)=>s+(x.sold||0)*(x.price-x.cost),0);msg='💰 Estimated profit: '+money(p)}
+else msg='💡 Try: “10 soap sold”, “Ramesh paid 500”, “Ramesh borrowed 2000”, “show stock”, “आजचा report”.';
+document.getElementById('aiOutput').textContent=msg}
+function voice(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){aiOutput.textContent='Voice is not supported here. Try Chrome.';return}let r=new SR();r.lang=d.language=='Hindi'?'hi-IN':d.language=='English'?'en-IN':'mr-IN';r.onstart=()=>aiOutput.textContent='🎤 Listening...';r.onresult=e=>{cmd.value=e.results[0][0].transcript;aiOutput.textContent='Heard: '+cmd.value};r.start()}
+function addProduct(){let n=pn.value.trim(),s=+ps.value,p=+pp.value;if(!n||s<0||p<0)return alert('Enter valid details.');d.products.push({name:n,stock:s,price:p,cost:Math.round(p*.7),sold:0});save();pn.value='';ps.value='';pp.value=''}
+function addStock(){let p=d.products[+sp.value],q=+sq.value;if(!p||q<1)return;p.stock+=q;save();alert('Stock updated: '+p.stock)}
+function customer(){let n=cn.value.trim(),u=+cu.value||0;if(!n)return;let c=customerBy(n);if(c)c.pending=u;else d.customers.push({name:n,pending:u});save();cn.value='';cu.value=''}
+function payment(){let c=d.customers[+pc.value],a=+pa.value;if(!c||a<1)return;c.pending=Math.max(0,c.pending-a);d.transactions.unshift({type:'Payment',text:c.name+' paid',amount:a,time:new Date().toLocaleString()});save();alert('Payment recorded. Pending: '+money(c.pending))}
+function bill(){let p=d.products[+bp.value],q=+bq.value;if(!p||q<1)return;billout.innerHTML=`<div class="card" style="margin-top:12px"><b>${esc(d.shopName)}</b><hr>${esc(p.name)} × ${q}<br><br><strong>Total: ${money(p.price*q)}</strong><br><small>Demo bill — permanent invoices need a backend.</small></div>`}
+function settings(){d.shopName=shop.value.trim()||'My Shop';d.language=lang.value;save();alert('Settings saved.')}
+function exportData(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));a.download='ai-shop-manager-backup.json';a.click()}
+function importData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{d=JSON.parse(r.result);save();alert('Backup imported.')}catch(x){alert('Invalid backup file.')}};r.readAsText(f)}
+function resetData(){if(confirm('Reset all demo data?')){d=JSON.parse(JSON.stringify(initial));save()}}
 function render(){
- document.getElementById("sales").textContent=money(data.sales);
- document.getElementById("orders").textContent=data.orders;
- document.getElementById("pending").textContent=money(data.customers.reduce((s,c)=>s+c.pending,0));
- document.getElementById("low").textContent=data.products.filter(p=>p.stock<=10).length;
-
- const sel=document.getElementById("productSelect");
- sel.innerHTML=data.products.map((p,i)=>`<option value="${i}">${p.name} — ${p.stock} left</option>`).join("");
-
- document.getElementById("stockList").innerHTML=data.products.map(p=>
- `<div class="item"><span>${p.name}</span><strong>${p.stock<=10?'<span class="badge">LOW</span> ':''}${p.stock}</strong></div>`).join("");
-
- document.getElementById("customerList").innerHTML=data.customers.map(c=>
- `<div class="item"><span>${escapeHtml(c.name)}</span><strong>${money(c.pending)}</strong></div>`).join("");
-}
-
-function showTab(id){
- document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
- document.getElementById(id).classList.add("active");
-}
-
-function quickSale(){
- const i=+document.getElementById("productSelect").value;
- const q=+document.getElementById("quantity").value;
- const p=data.products[i];
- if(!q || q<1)return alert("Enter a valid quantity.");
- if(q>p.stock)return alert("Not enough stock.");
- p.stock-=q; data.sales+=q*p.price; data.orders++;
- save();
- alert(`Sale recorded: ${q} ${p.name} = ${money(q*p.price)}`);
-}
-
-function findCustomer(name){
- return data.customers.find(c=>c.name.toLowerCase()===name.toLowerCase());
-}
-
-function processCommand(){
- const raw=document.getElementById("command").value.trim();
- if(!raw)return;
- const t=raw.toLowerCase();
- let message="";
-
- // Sale: 10 soap sold
- let m=t.match(/(\d+)\s*(soap|shampoo|rice|oil).*(sold|sale)/i);
- if(m){
-   const q=+m[1], name=m[2].toLowerCase();
-   const p=data.products.find(x=>x.name.toLowerCase()===name);
-   if(!p) message="❌ Product not found.";
-   else if(q>p.stock) message=`❌ Only ${p.stock} ${p.name} left.`;
-   else{
-     p.stock-=q; data.sales+=q*p.price; data.orders++; save();
-     message=`✅ ${q} ${p.name} sold.\nSale value: ${money(q*p.price)}\nStock left: ${p.stock}`;
-   }
- }
- // Payment
- else{
-   m=raw.match(/([A-Za-z]+)\s*(?:paid|gave)\s*(?:₹|rs\.?|rupees)?\s*(\d+)/i);
-   if(m){
-     const name=m[1], amount=+m[2]; let c=findCustomer(name);
-     if(!c){message="❌ Customer not found. Add the customer first.";}
-     else{c.pending=Math.max(0,c.pending-amount);save();message=`✅ ${c.name} paid ${money(amount)}.\nPending: ${money(c.pending)}`;}
-   }
-   // Borrow
-   else{
-     m=raw.match(/([A-Za-z]+).*(borrowed|owes|udhaar|उधार).*(?:₹|rs\.?|rupees)?\s*(\d+)/i);
-     if(m){
-       const name=m[1], amount=+m[3]; let c=findCustomer(name);
-       if(!c){c={name:name[0].toUpperCase()+name.slice(1),pending:0};data.customers.push(c);}
-       c.pending+=amount;save();message=`✅ ${c.name} pending is now ${money(c.pending)}.`;
-     }
-     else if(/stock|साठा|शिल्लक|स्टॉक/i.test(raw)){
-       message=data.products.map(p=>`${p.name}: ${p.stock}`).join("\n");
-     }
-     else if(/today|आज|aaj/i.test(raw)&&/report|sale|विक्री/i.test(raw)){
-       message=`📊 Today's report\nSales: ${money(data.sales)}\nOrders: ${data.orders}\nPending: ${money(data.customers.reduce((s,c)=>s+c.pending,0))}`;
-     }
-     else message="💡 Try: “10 soap sold”, “Ramesh paid 500”, “Ramesh borrowed 2000”, or “show stock”.";
-   }
- }
- document.getElementById("aiOutput").textContent=message;
-}
-
-function startVoice(){
- const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SR){document.getElementById("aiOutput").textContent="Voice recognition is not supported here. Open this website in Chrome.";return;}
- const r=new SR();
- r.lang="mr-IN";
- r.interimResults=false;
- r.onstart=()=>document.getElementById("aiOutput").textContent="🎤 Listening...";
- r.onresult=e=>{document.getElementById("command").value=e.results[0][0].transcript;document.getElementById("aiOutput").textContent="Heard: "+e.results[0][0].transcript;};
- r.onerror=e=>document.getElementById("aiOutput").textContent="Voice error: "+e.error;
- r.start();
-}
-
-function saveCustomer(){
- const name=document.getElementById("customerName").value.trim();
- const pending=+document.getElementById("customerPending").value||0;
- if(!name)return alert("Enter customer name.");
- const c=findCustomer(name);
- if(c)c.pending=pending;else data.customers.push({name,pending});
- save();
- document.getElementById("customerName").value="";
- document.getElementById("customerPending").value="";
-}
-
-function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
-
+sales.textContent=money(d.sales);orders.textContent=d.orders;pending.textContent=money(d.customers.reduce((s,c)=>s+c.pending,0));low.textContent=d.products.filter(p=>p.stock<=10).length;
+let o=d.products.map((p,i)=>`<option value="${i}">${esc(p.name)} — ${p.stock}</option>`).join('');qp.innerHTML=o;sp.innerHTML=o;bp.innerHTML=o;
+stockList.innerHTML=d.products.map(p=>`<div class="item"><span>${esc(p.name)}<br><small class="muted">${money(p.price)} each</small></span><strong>${p.stock<=10?'<span class="badge">LOW</span> ':''}${p.stock}</strong></div>`).join('');
+customersList.innerHTML=d.customers.map(c=>`<div class="item"><span>${esc(c.name)}</span><strong>${c.pending?money(c.pending):'<span class="badge ok">PAID</span>'}</strong></div>`).join('');
+pc.innerHTML=d.customers.map((c,i)=>`<option value="${i}">${esc(c.name)} — ${money(c.pending)}</option>`).join('');
+tx.innerHTML=d.transactions.slice(0,10).map(x=>`<div class="item"><span>${esc(x.type)}: ${esc(x.text)}<br><small class="muted">${esc(x.time)}</small></span><strong>${money(x.amount)}</strong></div>`).join('')||'<p class="muted">No transactions yet.</p>';
+let l=d.products.filter(p=>p.stock<=10);alerts.innerHTML=l.length?l.map(p=>`<div class="item">⚠️ ${esc(p.name)}<strong>${p.stock} left</strong></div>`).join(''):'<div class="item">✅ No low-stock products.</div>';
+let pr=d.products.reduce((s,p)=>s+(p.sold||0)*(p.price-p.cost),0);rev.textContent=money(d.sales);prof.textContent=money(pr);avg.textContent=money(d.orders?d.sales/d.orders:0);
+let mx=Math.max(1,...d.products.map(p=>p.sold||0));best.innerHTML=d.products.slice().sort((a,b)=>(b.sold||0)-(a.sold||0)).map(p=>`<div style="margin:10px 0"><b>${esc(p.name)}</b> — ${p.sold||0} sold<div class="bar"><i style="width:${(p.sold||0)/mx*100}%"></i></div></div>`).join('');
+advice.innerHTML=l.length?'⚠️ Reorder <b>'+l.map(p=>esc(p.name)).join(', ')+'</b>.<br>Monitor fast-moving products.':'✅ Stock looks healthy.<br>💡 Record every sale to improve future AI recommendations.';
+shop.value=d.shopName;lang.value=d.language}
 render();
-</script>
-</body>
-</html>
+</script></body></html>
