@@ -1,210 +1,70 @@
 <!doctype html>
-<html lang="mr">
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0f172a">
-<title>AI Shop Manager V5</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Shop Manager</title>
 <style>
-:root{
-  --bg:#f6f7fb;--surface:#fff;--text:#111827;--muted:#667085;--line:#e5e7eb;
-  --primary:#2563eb;--primary-dark:#1d4ed8;--green:#16a34a;--orange:#ea580c;
-  --red:#dc2626;--nav:#0f172a;--shadow:0 10px 30px rgba(15,23,42,.08);
-  --radius:20px
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-button,input,textarea,select{font:inherit}
-button{cursor:pointer}
-.app{max-width:980px;margin:auto;padding:14px 14px 90px}
-.header{background:linear-gradient(135deg,#0f172a,#1e3a8a);color:#fff;border-radius:24px;padding:20px;box-shadow:var(--shadow)}
-.header-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.brand{font-size:21px;font-weight:850}.tag{font-size:13px;color:#cbd5e1;margin-top:5px}
-.icon-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:#fff;width:42px;height:42px;border-radius:14px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
-.stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow)}
-.stat small{color:var(--muted)}.stat strong{display:block;font-size:23px;margin-top:5px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:17px;margin:14px 0;box-shadow:var(--shadow)}
-.card h2{font-size:18px;margin:0 0 12px}.muted{color:var(--muted);font-size:13px}
-label{display:block;font-size:13px;font-weight:700;margin:12px 0 6px}
-input,textarea,select{width:100%;border:1px solid #d7dce5;border-radius:13px;padding:12px;background:#fff;color:var(--text);outline:none}
-input:focus,textarea:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-textarea{min-height:120px;resize:vertical}
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.btn{border:0;border-radius:13px;padding:12px 15px;font-weight:800}
-.primary{background:var(--primary);color:#fff}.primary:hover{background:var(--primary-dark)}
-.secondary{background:#eef2f7;color:#24324a}.success{background:var(--green);color:#fff}.danger{background:var(--red);color:#fff}.orange{background:var(--orange);color:#fff}
-.voice{width:100%;min-height:82px;border-radius:20px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;font-size:17px;font-weight:850}
-.voice span{display:block;font-size:30px;margin-bottom:2px}
-.status{margin-top:12px;padding:11px 13px;border-radius:13px;background:#f1f5f9;color:#334155;font-size:14px}
-.status.ok{background:#ecfdf3;color:#166534}.status.warn{background:#fff7ed;color:#9a3412}
-.sale-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.badge{padding:6px 10px;border-radius:999px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:800}
-.item{display:grid;grid-template-columns:1fr 76px 100px 42px;gap:7px;margin:8px 0}
-.total-row{display:flex;justify-content:space-between;padding-top:12px;margin-top:10px;border-top:1px solid var(--line);font-weight:850;font-size:20px}
-.notice{padding:12px;border-radius:14px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-size:13px;margin-top:12px}
-pre{white-space:pre-wrap;background:#0b1220;color:#dbeafe;border-radius:14px;padding:13px;overflow:auto;font-size:12px}
-.empty{padding:16px;border:1px dashed #cbd5e1;border-radius:14px;color:var(--muted);text-align:center}
-.footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px;line-height:2}
-.footer a{color:#475569;text-decoration:none;margin:0 5px}
-.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:flex-end;justify-content:center;padding:12px;z-index:20}
-.modal.open{display:flex}.sheet{width:min(680px,100%);background:#fff;border-radius:24px 24px 14px 14px;padding:20px;max-height:90vh;overflow:auto}
-@media(max-width:700px){.grid{grid-template-columns:1fr 1fr}.grid .stat:last-child{grid-column:1/-1}.item{grid-template-columns:1fr 64px 88px 40px}}
-@media(min-width:701px){.voice{max-width:420px;margin:auto;display:block}}
-</style>
-</head>
-<body>
-<div class="app">
-  <header class="header">
-    <div class="header-top">
-      <div><div class="brand">🏪 AI Shop Manager</div><div class="tag">बोला → AI समजेल → तपासा → Confirm करा</div></div>
-      <button class="icon-btn" onclick="openSettings()" aria-label="Settings">⚙️</button>
-    </div>
-  </header>
+:root{--p:#6757ff;--c:#18c8ff;--pk:#ff4f9a;--g:#19c37d;--o:#ff9d3d;--bg:#f6f8ff;--tx:#18213a;--mu:#71809d}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,sans-serif;color:var(--tx);background:radial-gradient(circle at 5% 0,#e8e5ff,transparent 30%),radial-gradient(circle at 95% 5%,#d8f8ff,transparent 30%),var(--bg)}
+.app{max-width:1180px;margin:auto;padding:16px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.brand{display:flex;gap:12px;align-items:center}.logo{width:52px;height:52px;border-radius:17px;display:grid;place-items:center;font-size:27px;background:linear-gradient(135deg,var(--p),var(--pk));box-shadow:0 12px 30px #6757ff44;animation:pulse 3s infinite}@keyframes pulse{50%{transform:scale(1.08)}}h1{font-size:20px;margin:0}.muted{color:var(--mu);font-size:13px}.profile{background:#fff;border:1px solid #e8ebf5;padding:9px 13px;border-radius:13px;font-weight:700}
+.hero{color:white;border-radius:28px;padding:28px;background:linear-gradient(120deg,#4c39df,#7864ff 50%,#10bde9);box-shadow:0 25px 60px #5145d83b;animation:up .6s}@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}.hero h2{font-size:32px;line-height:1.05;margin:0 0 10px}.hero p{max-width:650px;color:#eef1ff}.hero button{background:white;color:#4c3de0}
+button{border:0;border-radius:11px;padding:11px 15px;font-weight:800;cursor:pointer;transition:.2s;box-shadow:0 5px 16px #0001}button:hover{transform:translateY(-2px)}.primary{background:linear-gradient(135deg,var(--p),#8b64ff);color:white}.secondary{background:#edf1ff;color:#5149aa}.pink{background:#ffe5f1;color:#b22666}.green{background:#dff9ee;color:#087a4d}
+.nav{display:flex;gap:6px;overflow:auto;margin:15px 0;padding:6px;background:#ffffffcc;border:1px solid #e8ebf5;border-radius:15px}.nav button{background:transparent;color:var(--mu);box-shadow:none;white-space:nowrap}.nav button.active{background:white;color:var(--p);box-shadow:0 5px 16px #26365d18}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.metric,.card{background:#fffffff2;border:1px solid #e8ebf5;border-radius:19px;padding:16px;box-shadow:0 18px 50px #26365d12}.metric strong{display:block;font-size:25px;margin:5px 0}.metric small{color:var(--mu)}.tag{display:inline-block;padding:5px 8px;border-radius:20px;font-size:11px;font-weight:800}.ok{background:#e3faef;color:#087a4d}.low{background:#fff0e2;color:#b45b00}
+.layout{display:grid;grid-template-columns:1.4fr .9fr;gap:14px;margin-top:14px}.chat{min-height:190px;background:linear-gradient(#faf9ff,#f1f8ff);padding:13px;border-radius:14px}.bubble{padding:10px 13px;border-radius:15px;max-width:82%;margin:7px 0}.ai{background:white;box-shadow:0 4px 14px #0001}.you{margin-left:auto;background:var(--p);color:white}.input{display:flex;gap:7px;margin-top:9px}.input input{flex:1;padding:12px;border:1px solid #dfe4f0;border-radius:11px;font-size:16px}.voice{background:linear-gradient(135deg,var(--pk),#ff7a62);color:white;border-radius:50%;width:48px}.features{display:grid;grid-template-columns:1fr;gap:9px}.feature{padding:13px;border-radius:14px;background:linear-gradient(135deg,#fff,#f7f7ff);border:1px solid #e8ebf5}.products{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.product{padding:14px;border:1px solid #e8ebf5;border-radius:15px;background:white}.bar{height:7px;background:#edf0f7;border-radius:10px;margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--c),var(--p));border-radius:10px}.hidden{display:none}.toast{position:fixed;right:15px;bottom:15px;background:#17213a;color:white;padding:13px 16px;border-radius:12px;display:none}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}@media(max-width:520px){.app{padding:10px}.hero h2{font-size:27px}.products{grid-template-columns:1fr}.input{flex-wrap:wrap}.input input{min-width:100%}}
 
-  <section class="grid">
-    <div class="stat"><small>आजची विक्री</small><strong id="sales">₹0</strong></div>
-    <div class="stat"><small>Orders</small><strong id="orders">0</strong></div>
-    <div class="stat"><small>आजचे Udhar</small><strong id="pending">₹0</strong></div>
-  </section>
+.modal{position:fixed;inset:0;background:#17213a88;backdrop-filter:blur(7px);display:grid;place-items:center;padding:15px;z-index:20}.modal.hidden{display:none}.modalbox{width:min(560px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:22px;padding:20px;box-shadow:0 30px 80px #0004}.modalbox input{width:100%;padding:11px;border:1px solid #dce2ef;border-radius:11px;margin:5px 0 10px;font:inherit}.pitem{display:grid;grid-template-columns:1.3fr .6fr .8fr 35px;gap:6px;margin:6px 0}.summary{display:flex;justify-content:space-between;padding:14px;margin:10px 0;background:#f3f5ff;border-radius:12px}
+</style></head>
+<body><div class="app">
+<div class="top"><div class="brand"><div class="logo">🏪</div><div><h1>AI Shop Manager</h1><span class="muted">Smart • Simple • Voice-powered</span></div></div><div class="profile">👤 My Shop ▾</div></div>
+<div class="hero"><h2>Run your shop.<br>Just talk to it. ✨</h2><p>Speak naturally with your customer. AI understands the conversation and helps manage sales, stock and udhar.</p><button onclick="go('assistant')">🎙️ Start Smart Conversation</button></div>
+<div class="nav"><button class="active" onclick="go('dashboard')">🏠 Dashboard</button><button onclick="go('assistant')">🤖 AI Assistant</button><button onclick="go('inventory')">📦 Inventory</button><button onclick="go('customers')">👥 Customers</button><button onclick="go('reports')">📊 Reports</button></div>
 
-  <section class="card">
-    <h2>🎙️ बोलून Sale करा</h2>
-    <p class="muted">मराठी, हिंदी किंवा English मध्ये सहज बोला किंवा मजकूर लिहा.</p>
-    <select id="lang" aria-label="Language">
-      <option value="mr-IN">मराठी</option><option value="hi-IN">हिंदी</option><option value="en-IN">English</option>
-    </select>
-    <textarea id="t" placeholder="उदा. रमेशला दोन साबण आणि एक शॅम्पू दिला. ₹200 दिले."></textarea>
-    <div class="actions">
-      <button class="btn voice" id="voiceBtn" onclick="startVoice()"><span>🎙️</span>Tap to speak</button>
-    </div>
-    <div class="actions">
-      <button class="btn primary" onclick="analyze()">🤖 Analyze Sale</button>
-      <button class="btn secondary" onclick="stopVoice()">⏹️ Stop</button>
-    </div>
-    <div id="status" class="status">AI result येईल तेव्हा Confirm करण्यापूर्वी तपासा.</div>
-  </section>
+<section id="dashboard"><div class="grid">
+<div class="metric">💰<small> Today's Sales</small><strong>₹8,450</strong><span class="tag ok">↑ 12.5%</span></div>
+<div class="metric">🛒<small> Orders</small><strong>42</strong><span class="tag ok">+8 today</span></div>
+<div class="metric">📒<small> Pending Udhar</small><strong>₹3,280</strong><span class="tag low">12 customers</span></div>
+<div class="metric">⚠️<small> Low Stock</small><strong>5 items</strong><span class="tag low">Attention</span></div></div>
+<div class="layout"><div class="card" id="assistant"><h3>🤖 AI Shop Assistant</h3><div class="chat" id="chat"><div class="bubble ai">👋 नमस्कार! आज दुकानाचा हिशोब माझ्यावर सोडा.</div><div class="bubble you">“रमेशला 2 साबण आणि 1 शॅम्पू दिला.”</div><div class="bubble ai">🧾 Sale detected. Payment किती मिळाले?</div></div><div class="input"><input id="msg" placeholder="उदा. “आजचा report दाखव”" onkeydown="if(event.key==='Enter')send()"><button class="voice" onclick="voice()">🎙️</button><button class="primary" onclick="send()">Send</button></div></div>
+<div class="card"><h3>✨ AI Insights</h3><div class="features"><div class="feature">📈 <b>Sales rising</b><br><span class="muted">Today is 12.5% above yesterday.</span></div><div class="feature">📦 <b>Restock soon</b><br><span class="muted">5 products are running low.</span></div><div class="feature">💡 <b>Smart tip</b><br><span class="muted">Soap is your best seller.</span></div></div></div></div>
+<div class="card"><h3>⚡ Fast Actions</h3><button class="primary" onclick="toast('Quick Sale opened')">➕ Quick Sale</button><button class="secondary" onclick="toast('Add Stock opened')">📦 Add Stock</button><button class="pink" onclick="toast('Payment opened')">📒 Record Payment</button><button class="green" onclick="toast('Digital bill created')">🧾 Create Bill</button></div></section>
 
-  <section class="card">
-    <div class="sale-head"><h2>🧾 Sale Preview</h2><span class="badge">Human confirmation required</span></div>
-    <label>Customer</label><input id="customer" placeholder="Customer name">
-    <div id="items"><div class="empty">अजून sale detect झालेली नाही.</div></div>
-    <div class="total-row"><span>Total</span><span>₹<span id="total">0.00</span></span></div>
-    <label>Paid</label><input id="paid" type="number" min="0" step="0.01" value="0" oninput="recalc()">
-    <div class="total-row" style="font-size:17px"><span>Udhar</span><span>₹<span id="pending2">0.00</span></span></div>
-    <div class="notice">⚠️ AI चुकीचे समजू शकते. Sale, quantity, price आणि payment तपासूनच <b>Confirm Sale</b> करा.</div>
-    <div class="actions">
-      <button class="btn success" onclick="confirmSale()">✅ Confirm Sale</button>
-      <button class="btn secondary" onclick="clearSale()">Clear</button>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2>📦 Stock</h2>
-    <button class="btn secondary" onclick="loadStock()">Refresh Stock</button>
-    <pre id="stock">Loading...</pre>
-  </section>
-
-  <section class="card">
-    <h2>📊 Today</h2>
-    <button class="btn secondary" onclick="loadReport()">Refresh Report</button>
-    <pre id="report">Loading...</pre>
-  </section>
-
-  <footer class="footer">
-    © 2026 AI Shop Manager<br>
-    <a href="privacy.html">Privacy Policy</a> ·
-    <a href="terms.html">Terms of Use</a> ·
-    <a href="ai-disclaimer.html">AI Disclaimer</a> ·
-    <a href="contact.html">Contact</a>
-  </footer>
-</div>
-
-<div class="modal" id="settingsModal" onclick="if(event.target===this)closeSettings()">
-  <div class="sheet">
-    <h2>⚙️ App Settings</h2>
-    <p class="muted">GitHub Pages आणि Render वेगवेगळ्या servers वर असल्यास इथे Render backend URL द्या.</p>
-    <label>Backend API URL</label>
-    <input id="apiBase" placeholder="https://your-service.onrender.com">
-    <div class="actions">
-      <button class="btn primary" onclick="saveSettings()">Save</button>
-      <button class="btn secondary" onclick="closeSettings()">Cancel</button>
-    </div>
-    <p class="muted" style="margin-top:14px">🔐 API key इथे कधीही टाकू नका. ती backend environment secret मध्येच ठेवा.</p>
-  </div>
-</div>
-
+<section id="inventory" class="hidden"><div class="card"><h3>📦 Smart Inventory</h3><div class="products"><div class="product">🧼 <b>Soap</b> <span class="tag ok">42</span><div class="bar"><i style="width:72%"></i></div></div><div class="product">🧴 <b>Shampoo</b> <span class="tag low">5 left</span><div class="bar"><i style="width:18%"></i></div></div><div class="product">🍚 <b>Rice</b> <span class="tag ok">28</span><div class="bar"><i style="width:55%"></i></div></div><div class="product">🫗 <b>Oil</b> <span class="tag low">4 left</span><div class="bar"><i style="width:14%"></i></div></div></div></div></section>
+<section id="customers" class="hidden"><div class="card"><h3>👥 Customer Udhar</h3><div class="products"><div class="product">👤 <b>Ramesh</b><br><span class="muted">Pending payment</span><br><strong>₹850</strong></div><div class="product">👤 <b>Suresh</b><br><span class="muted">Pending payment</span><br><strong>₹430</strong></div></div></div></section>
+<section id="reports" class="hidden"><div class="card"><h3>📊 Business Report</h3><div class="grid"><div class="metric"><small>Revenue</small><strong>₹8,450</strong></div><div class="metric"><small>Profit</small><strong>₹2,140</strong></div><div class="metric"><small>Avg. Order</small><strong>₹201</strong></div><div class="metric"><small>Best Seller</small><strong>Soap</strong></div></div></div></section>
+</div><div id="toast" class="toast"></div>
 <script>
-const API_KEY_STORAGE="ai_shop_manager_api_base";
-let detected={customer:null,items:[],total:0,paid:0,pending:0};
-let recognition=null;
-
-function base(){return (localStorage.getItem(API_KEY_STORAGE)||"").replace(/\/+$/,"")}
-function api(path){return base()+path}
-function setStatus(msg,kind=""){const s=document.getElementById("status");s.textContent=msg;s.className="status "+kind}
-function openSettings(){document.getElementById("apiBase").value=base();document.getElementById("settingsModal").classList.add("open")}
-function closeSettings(){document.getElementById("settingsModal").classList.remove("open")}
-function saveSettings(){localStorage.setItem(API_KEY_STORAGE,document.getElementById("apiBase").value.trim().replace(/\/+$/,""));closeSettings();setStatus("Backend URL saved. आता AI test करू शकता.","ok");loadStock();loadReport()}
-
-function startVoice(){
- const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SR){setStatus("या browser मध्ये speech recognition उपलब्ध नाही. Text input वापरा.","warn");return}
- if(recognition){recognition.stop()}
- recognition=new SR();recognition.lang=document.getElementById("lang").value;recognition.continuous=true;recognition.interimResults=false;
- recognition.onresult=e=>{let out="";for(let i=e.resultIndex;i<e.results.length;i++)if(e.results[i].isFinal)out+=e.results[i][0].transcript+"\n";document.getElementById("t").value+=out};
- recognition.onerror=e=>setStatus("Voice error: "+e.error,"warn");
- recognition.onend=()=>setStatus("🎙️ Voice stopped. Text तपासा.","");
- recognition.start();setStatus("🎙️ Listening... बोलत रहा.","ok")
-}
-function stopVoice(){if(recognition)recognition.stop()}
-
-async function analyze(){
- const transcript=document.getElementById("t").value.trim();
- if(!transcript){setStatus("आधी voice किंवा text द्या.","warn");return}
- setStatus("🤖 AI sale समजत आहे...");
+let base=location.origin,proposal=null,recognition=null;
+function go(id){document.querySelectorAll('section[id]').forEach(x=>x.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');loadAll()}
+function toast(s){let x=document.getElementById('toast');x.textContent='✨ '+s;x.style.display='block';setTimeout(()=>x.style.display='none',2200)}
+async function api(u,o){let r=await fetch(base+u,o);let j=await r.json();if(!r.ok)throw Error(j.detail||'Request failed');return j}
+async function send(){
+ let i=document.getElementById('msg'),v=i.value.trim();if(!v)return;
+ document.getElementById('chat').innerHTML+=`<div class="bubble you">${escapeHtml(v)}</div>`;
  try{
-  const r=await fetch(api("/api/analyze-conversation"),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({transcript,language:document.getElementById("lang").value})});
-  if(!r.ok)throw new Error("Backend HTTP "+r.status);
-  const j=await r.json();detected=j.result||{};
-  document.getElementById("customer").value=detected.customer||"";
-  document.getElementById("paid").value=detected.paid||0;
-  renderItems();recalc();
-  setStatus(j.warning||"🧾 Sale Preview तयार आहे. तपासा आणि मग Confirm करा.","ok");
- }catch(e){setStatus("Backend जोडता आला नाही. Settings मध्ये Render URL तपासा.","warn")}
+  let j=await api('/api/analyze-conversation',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({transcript:v,language:'mr-IN'})});
+  proposal=j.result||{};openModal();toast(j.source==='openai'?'Real AI proposal ready':'Demo fallback proposal ready');
+ }catch(e){toast(e.message)}
+ i.value='';
 }
-function renderItems(){
- const wrap=document.getElementById("items");wrap.innerHTML="";
- if(!detected.items?.length){wrap.innerHTML='<div class="empty">अजून products नाहीत.</div>';return}
- detected.items.forEach((x,i)=>{
-  const d=document.createElement("div");d.className="item";
-  d.innerHTML=`<input aria-label="Product" value="${esc(x.product)}" oninput="detected.items[${i}].product=this.value">
-  <input aria-label="Quantity" type="number" min="1" value="${x.quantity}" oninput="detected.items[${i}].quantity=+this.value;recalc()">
-  <input aria-label="Unit price" type="number" min="0" step="0.01" value="${x.unit_price||0}" oninput="detected.items[${i}].unit_price=+this.value;recalc()">
-  <button class="btn danger" onclick="detected.items.splice(${i},1);renderItems();recalc()">×</button>`;
-  wrap.appendChild(d)
- })
-}
-function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
-function recalc(){
- let total=(detected.items||[]).reduce((s,x)=>s+(+x.quantity||0)*(+x.unit_price||0),0);
- detected.total=total;document.getElementById("total").textContent=total.toFixed(2);
- document.getElementById("pending2").textContent=Math.max(0,total-(+document.getElementById("paid").value||0)).toFixed(2)
-}
-async function confirmSale(){
- detected.customer=document.getElementById("customer").value.trim()||null;
- detected.paid=+document.getElementById("paid").value||0;
- if(!detected.items?.length){setStatus("किमान एक product आवश्यक आहे.","warn");return}
- if(detected.paid>detected.total){setStatus("Paid amount total पेक्षा जास्त आहे. तपासा.","warn");return}
- try{
-  const r=await fetch(api("/api/confirm-sale"),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(detected)});
-  const j=await r.json();if(!r.ok)throw new Error(j.detail||"Sale failed");
-  setStatus(`✅ Sale confirmed — ₹${j.total.toFixed(2)} paid ₹${j.paid.toFixed(2)} · Udhar ₹${j.pending.toFixed(2)}`,"ok");
-  clearSale(false);loadStock();loadReport()
- }catch(e){setStatus("Sale confirm failed: "+e.message,"warn")}
-}
-function clearSale(show=true){detected={customer:null,items:[],total:0,paid:0,pending:0};document.getElementById("customer").value="";document.getElementById("paid").value=0;renderItems();recalc();if(show)setStatus("Sale preview clear केला.")}
-async function loadStock(){try{const r=await fetch(api("/api/stock"));if(!r.ok)throw 0;document.getElementById("stock").textContent=JSON.stringify(await r.json(),null,2)}catch{document.getElementById("stock").textContent="Backend URL Settings मध्ये सेट करा."}}
-async function loadReport(){try{const r=await fetch(api("/api/report"));if(!r.ok)throw 0;const j=await r.json();document.getElementById("sales").textContent="₹"+Number(j.sales||0).toFixed(2);document.getElementById("orders").textContent=j.orders||0;document.getElementById("pending").textContent="₹"+Number(j.pending||0).toFixed(2);document.getElementById("report").textContent=JSON.stringify(j,null,2)}catch{document.getElementById("report").textContent="Backend URL Settings मध्ये सेट करा."}}
-renderItems();recalc();loadStock();loadReport();
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function openModal(){document.getElementById('modal').classList.remove('hidden');pcustomer.value=proposal.customer||'';ppaid.value=proposal.paid||0;renderProposalItems();recalcProposal()}
+function closeModal(){document.getElementById('modal').classList.add('hidden')}
+function renderProposalItems(){pitems.innerHTML='';(proposal.items||[]).forEach((x,i)=>{let d=document.createElement('div');d.className='pitem';d.innerHTML=`<input value="${escapeHtml(x.product)}" oninput="proposal.items[${i}].product=this.value"><input type="number" min="1" value="${x.quantity}" oninput="proposal.items[${i}].quantity=+this.value;recalcProposal()"><input type="number" min="0" value="${x.unit_price||0}" oninput="proposal.items[${i}].unit_price=+this.value;recalcProposal()"><button class="pink" onclick="proposal.items.splice(${i},1);renderProposalItems();recalcProposal()">×</button>`;pitems.appendChild(d)})}
+function recalcProposal(){let total=(proposal?.items||[]).reduce((s,x)=>s+(+x.quantity||0)*(+x.unit_price||0),0);proposal.total=Math.round(total*100)/100;ptotal.textContent=proposal.total.toFixed(2);pudhar.textContent=Math.max(0,proposal.total-(+ppaid.value||0)).toFixed(2)}
+async function confirmProposal(){proposal.customer=pcustomer.value.trim()||null;proposal.paid=+ppaid.value||0;proposal.pending=Math.max(0,proposal.total-proposal.paid);if(!proposal.items?.length)return toast('Add at least one product');try{let j=await api('/api/confirm-sale',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(proposal)});closeModal();document.getElementById('chat').innerHTML+=`<div class="bubble ai">✅ Sale confirmed — Total ₹${j.total}, Paid ₹${j.paid}, Udhar ₹${j.pending}</div>`;toast('Sale confirmed successfully');proposal=null;loadAll()}catch(e){toast(e.message)}}
+function voice(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return toast('Speech recognition unavailable');recognition=new SR();recognition.lang='mr-IN';recognition.continuous=false;recognition.onresult=e=>{msg.value=e.results[0][0].transcript;send()};recognition.start();toast('🎙️ Listening…')}
+async function loadAll(){try{let [r,p,c]=await Promise.all([api('/api/report'),api('/api/stock'),api('/api/customers')]);sales.textContent='₹'+Number(r.sales).toFixed(0);orders.textContent=r.orders;pending.textContent='₹'+Number(r.pending).toFixed(0);low.textContent=r.low_stock.length;products.innerHTML=p.map(x=>`<div class="product">🛍️ <b>${escapeHtml(x.name)}</b><br><span class="tag ${x.stock<=5?'low':'ok'}">${x.stock} in stock</span><div class="bar"><i style="width:${Math.min(100,x.stock*2)}%"></i></div></div>`).join('');cust.innerHTML=c.length?c.map(x=>`<div class="product">👤 <b>${escapeHtml(x.name)}</b><br><span class="muted">Pending</span><br><strong>₹${Number(x.pending).toFixed(0)}</strong></div>`).join(''):'<span class="muted">No customers yet.</span>';rep.textContent=JSON.stringify(r,null,2)}catch(e){toast('Backend not connected')}}
+loadAll();
 </script>
-</body>
-</html>
+<div id="modal" class="modal hidden"><div class="modalbox">
+<h2>🧾 Confirm Sale</h2><p class="muted">AI proposal — review before updating your shop.</p>
+<label>Customer</label><input id="pcustomer" placeholder="Customer name">
+<div id="pitems"></div>
+<label>Paid (₹)</label><input id="ppaid" type="number" min="0" value="0" oninput="recalcProposal()">
+<div class="summary"><b>Total: ₹<span id="ptotal">0</span></b><b>Udhar: ₹<span id="pudhar">0</span></b></div>
+<button class="green" onclick="confirmProposal()">✅ Confirm Sale</button>
+<button class="secondary" onclick="closeModal()">✕ Cancel</button>
+</div></div>
+</body></html>
