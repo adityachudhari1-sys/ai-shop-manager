@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>AI Shop Manager</title>
+
+<style>
+:root{
+ --p:#6757ff;
+ --c:#18c8ff;
+ --pk:#ff4f9a;
+ --g:#19c37d;
+ --o:#ff9d3d;
+ --bg:#f6f8ff;
+ --tx:#18213a;
+ --mu:#71809d
+}
+
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ font-family:system-ui,-apple-system,sans-serif;
+ color:var(--tx);
+ background:
+ radial-gradient(circle at 5% 0,#e8e5ff,transparent 30%),
+ radial-gradient(circle at 95% 5%,#d8f8ff,transparent 30%),
+ var(--bg)
+}
+
+.app{
+ max-width:1180px;
+ margin:auto;
+ padding:16px
+}
+
+.top{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:15px
+}
+
+.brand{
+ display:flex;
+ gap:12px;
+ align-items:center
+}
+
+.logo{
+ width:52px;
+ height:52px;
+ border-radius:17px;
+ display:grid;
+ place-items:center;
+ font-size:27px;
+ background:linear-gradient(135deg,var(--p),var(--pk));
+ box-shadow:0 12px 30px #6757ff44;
+ animation:pulse 3s infinite
+}
+
+@keyframes pulse{
+ 50%{transform:scale(1.08)}
+}
+
+h1{
+ font-size:20px;
+ margin:0
+}
+
+.muted{
+ color:var(--mu);
+ font-size:13px
+}
+
+.profile{
+ background:#fff;
+ border:1px solid #e8ebf5;
+ padding:9px 13px;
+ border-radius:13px;
+ font-weight:700
+}
+
+.hero{
+ color:white;
+ border-radius:28px;
+ padding:28px;
+ background:linear-gradient(120deg,#4c39df,#7864ff 50%,#10bde9);
+ box-shadow:0 25px 60px #5145d83b;
+ animation:up .6s
+}
+
+@keyframes up{
+ from{
+  opacity:0;
+  transform:translateY(12px)
+ }
+ to{
+  opacity:1;
+  transform:none
+ }
+}
+
+.hero h2{
+ font-size:32px;
+ line-height:1.05;
+ margin:0 0 10px
+}
+
+.hero p{
+ max-width:650px;
+ color:#eef1ff
+}
+
+.hero button{
+ background:white;
+ color:#4c3de0
+}
+
+button{
+ border:0;
+ border-radius:11px;
+ padding:11px 15px;
+ font-weight:800;
+ cursor:pointer;
+ transition:.2s;
+ box-shadow:0 5px 16px #0001
+}
+
+button:hover{
+ transform:translateY(-2px)
+}
+
+.primary{
+ background:linear-gradient(135deg,var(--p),#8b64ff);
+ color:white
+}
+
+.secondary{
+ background:#edf1ff;
+ color:#5149aa
+}
+
+.pink{
+ background:#ffe5f1;
+ color:#b22666
+}
+
+.green
