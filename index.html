@@ -34,6 +34,17 @@ input,select,textarea{width:100%;padding:11px;border:1px solid #d5dbe5;border-ra
 <p class="muted">Examples: “10 soap sold”, “Ramesh paid 500”, “Ramesh borrowed 2000”, “show stock”, “आजचा report”.</p>
 <textarea id="cmd" rows="4" placeholder="Type or speak your shop instruction..."></textarea>
 <div class="row"><button class="blue" onclick="voice()">🎤 Speak</button><button onclick="process()">⚡ Process</button></div><div id="aiOutput">Ready.</div></div>
+<div class="card">
+<h3>🗣️ Conversation Mode</h3>
+<p class="muted">Shopkeeper आणि customer यांची conversation record करा. AI sale, products, quantity आणि payment शोधून confirmation दाखवेल.</p>
+<div class="row">
+<button class="blue" onclick="startConversation()">🎙️ Start Conversation</button>
+<button class="light" onclick="stopConversation()">⏹️ Stop</button>
+</div>
+<div id="conversationText" style="white-space:pre-wrap;background:#f8fafc;border-radius:10px;padding:12px;margin-top:10px;min-height:55px">Conversation will appear here...</div>
+<button class="full" onclick="analyzeConversation()">🔎 Analyze Conversation</button>
+<div id="salePreview"></div>
+</div>
 <div class="card"><h3>💡 Quick Commands</h3><div class="grid">
 <button class="light" onclick="put('10 soap sold')">10 soap sold</button><button class="light" onclick="put('Ramesh paid 500')">Ramesh paid 500</button>
 <button class="light" onclick="put('Ramesh borrowed 2000')">Ramesh borrowed 2000</button><button class="light" onclick="put('show stock')">Show stock</button>
@@ -83,6 +94,81 @@ else if(/profit|नफा/i.test(r)){let p=d.products.reduce((s,x)=>s+(x.sold||0
 else msg='💡 Try: “10 soap sold”, “Ramesh paid 500”, “Ramesh borrowed 2000”, “show stock”, “आजचा report”.';
 document.getElementById('aiOutput').textContent=msg}
 function voice(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){aiOutput.textContent='Voice is not supported here. Try Chrome.';return}let r=new SR();r.lang=d.language=='Hindi'?'hi-IN':d.language=='English'?'en-IN':'mr-IN';r.onstart=()=>aiOutput.textContent='🎤 Listening...';r.onresult=e=>{cmd.value=e.results[0][0].transcript;aiOutput.textContent='Heard: '+cmd.value};r.start()}
+
+let conversationRecognition=null;
+let conversationListening=false;
+function startConversation(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){conversationText.textContent='Voice conversation is not supported here. Try Chrome.';return}
+  conversationRecognition=new SR();
+  conversationRecognition.lang=d.language=='Hindi'?'hi-IN':d.language=='English'?'en-IN':'mr-IN';
+  conversationRecognition.continuous=true;
+  conversationRecognition.interimResults=false;
+  conversationRecognition.onstart=()=>{conversationListening=true;conversationText.textContent='🎙️ Listening... Speak naturally with the customer.'};
+  conversationRecognition.onresult=e=>{
+    let out='';
+    for(let i=0;i<e.results.length;i++) if(e.results[i].isFinal) out+=e.results[i][0].transcript+'\\n';
+    conversationText.textContent+= (conversationText.textContent.includes('Listening...')?'': '\\n') + out;
+  };
+  conversationRecognition.onerror=e=>conversationText.textContent+='\\n⚠️ Voice error: '+e.error;
+  conversationRecognition.onend=()=>{conversationListening=false};
+  conversationRecognition.start();
+}
+function stopConversation(){
+  if(conversationRecognition){conversationRecognition.stop();conversationListening=false}
+}
+function analyzeConversation(){
+  const text=conversationText.textContent.trim();
+  if(!text||text.includes('Conversation will appear here')){salePreview.innerHTML='<div class="card">❌ No conversation recorded.</div>';return}
+  let items=[];
+  d.products.forEach(p=>{
+    const n=p.name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    let m=text.match(new RegExp('(\\d+)\\s*(?:x\\s*)?'+n,'i'));
+    if(!m){
+      m=text.match(new RegExp(n+'\\s*(?:x\\s*)?(\\d+)','i'));
+    }
+    if(m) items.push({name:p.name,qty:+m[1],price:p.price});
+  });
+  let paymentMatch=text.match(/(?:paid|gave|payment|₹|rs\\.?|rupees|रुपये|दिले|दिला)[^0-9]{0,20}(\\d+)/i);
+  if(!paymentMatch) paymentMatch=text.match(/(?:₹|rs\\.?|rupees)\\s*(\\d+)/i);
+  let paid=paymentMatch?+paymentMatch[1]:0;
+  let total=items.reduce((s,x)=>s+x.qty*x.price,0);
+  if(!items.length){
+    salePreview.innerHTML='<div class="card">❓ No product/quantity detected. Please edit the conversation or enter the sale manually.</div>';
+    return;
+  }
+  let customerMatch=text.match(/(?:customer|ग्राहक|customer name)\\s*[:=-]?\\s*([A-Za-z]+)|\\b(Ramesh|Suresh)\\b/i);
+  let customerName=customerMatch?(customerMatch[1]||customerMatch[2]):'Walk-in Customer';
+  let balance=Math.max(0,total-paid);
+  salePreview.innerHTML=`<div class="card" style="margin-top:10px">
+    <h3>🧾 Detected Sale — Confirm</h3>
+    <p><b>Customer:</b> ${esc(customerName)}</p>
+    <p>${items.map(x=>`${esc(x.name)} × ${x.qty} = ${money(x.qty*x.price)}`).join('<br>')}</p>
+    <hr><p><b>Total:</b> ${money(total)}<br><b>Paid:</b> ${money(paid)}<br><b>Udhar:</b> ${money(balance)}</p>
+    <button class="green" onclick='confirmConversationSale(${JSON.stringify(items)},${paid},${JSON.stringify(customerName)})'>✅ Confirm Sale</button>
+    <button class="light" onclick="salePreview.innerHTML=''">✏️ Edit / Cancel</button>
+  </div>`;
+}
+function confirmConversationSale(items,paid,customerName){
+  for(const x of items){
+    const p=product(x.name);
+    if(!p||x.qty>p.stock){alert('Not enough stock for '+x.name);return}
+  }
+  let total=0;
+  items.forEach(x=>{
+    const p=product(x.name);p.stock-=x.qty;p.sold=(p.sold||0)+x.qty;total+=x.qty*p.price;
+  });
+  d.sales+=total;d.orders++;
+  if(customerName!='Walk-in Customer'){
+    let c=customerBy(customerName);
+    if(!c){c={name:customerName,pending:0};d.customers.push(c)}
+    c.pending+=Math.max(0,total-paid);
+  }
+  d.transactions.unshift({type:'Conversation Sale',text:customerName+' — '+items.map(x=>x.qty+' '+x.name).join(', '),amount:total,time:new Date().toLocaleString()});
+  save();
+  salePreview.innerHTML=`<div class="card"><h3>✅ Sale Confirmed</h3>Total ${money(total)} • Paid ${money(paid)} • Udhar ${money(Math.max(0,total-paid))}</div>`;
+}
+
 function addProduct(){let n=pn.value.trim(),s=+ps.value,p=+pp.value;if(!n||s<0||p<0)return alert('Enter valid details.');d.products.push({name:n,stock:s,price:p,cost:Math.round(p*.7),sold:0});save();pn.value='';ps.value='';pp.value=''}
 function addStock(){let p=d.products[+sp.value],q=+sq.value;if(!p||q<1)return;p.stock+=q;save();alert('Stock updated: '+p.stock)}
 function customer(){let n=cn.value.trim(),u=+cu.value||0;if(!n)return;let c=customerBy(n);if(c)c.pending=u;else d.customers.push({name:n,pending:u});save();cn.value='';cu.value=''}
