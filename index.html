@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#6757ff">
+<link rel="manifest" href="manifest.webmanifest">
 <title>AI Shop Manager — Simple Shop & Profit Manager</title>
 
 <link rel="canonical" href="https://adityachudhari1-sys.github.io/ai-shop-manager/">
@@ -65,6 +67,17 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
 @media(max-width:560px){.quick-start{grid-template-columns:1fr 1fr;gap:8px}.quick-card{padding:14px;min-height:112px}.quick-card .ico{font-size:27px}}
 </style>
 
+
+<style>
+.long-voice{border:1px solid var(--line);border-radius:18px;background:#fff;padding:14px;margin-top:10px}
+.long-voice-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mic-big{width:62px;height:62px;border-radius:50%;font-size:28px;background:linear-gradient(135deg,var(--pk),#ff7a62);color:#fff}
+.mic-big.listening{animation:pulse 1.1s infinite;box-shadow:0 0 0 8px #ff4f9a22}
+.live-transcript{margin-top:10px;padding:11px;border-radius:12px;background:#f7f8fc;min-height:44px;font-size:14px}
+.voice-meter{height:7px;background:#edf0f7;border-radius:9px;overflow:hidden;margin-top:9px}
+.voice-meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--c),var(--p));transition:width .12s}
+</style>
+
 </head>
 <body>
 <div id="auth" class="auth hidden">
@@ -93,7 +106,8 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
 <header class="top">
  <div class="brand"><div class="logo">🏪</div><div><h1>AI Shop Manager</h1><span class="muted">V5 Real AI + V4 Voice & Conversation</span></div></div>
  <div class="profile">
-  <button id="accountIconBtn" aria-label="Login or Register" title="Login / Register" onclick="openAuth('login')" style="width:44px;height:44px;border-radius:50%;padding:0;font-size:22px;background:#eef2ff;color:#3730a3;border:2px solid #c7d2fe;box-shadow:0 4px 12px rgba(0,0,0,.12);cursor:pointer">👤</button>
+  <button id="installBtn" class="hidden" onclick="installApp()" aria-label="Install app" title="Install AI Shop Manager" style="padding:8px 10px;background:#e0e7ff;color:#3730a3">📲 Install</button>
+   <button id="accountIconBtn" aria-label="Login or Register" title="Login / Register" onclick="openAuth('login')" style="width:44px;height:44px;border-radius:50%;padding:0;font-size:22px;background:#eef2ff;color:#3730a3;border:2px solid #c7d2fe;box-shadow:0 4px 12px rgba(0,0,0,.12);cursor:pointer">👤</button>
   🤖 <span id="accountName">Guest</span>
   <button id="loginOpenBtn" onclick="openAuth('login')" style="margin-left:8px;padding:6px 9px;border-radius:9px;background:#e0e7ff;color:#3730a3;box-shadow:none">Login / Register</button>
   <button id="logoutBtn" onclick="logout()" class="hidden" style="margin-left:8px;padding:6px 9px;border-radius:9px;background:#fee2e2;color:#b91c1c;box-shadow:none">Logout</button>
@@ -214,9 +228,27 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
 दुकानदार: एकूण 300 रुपये.
 ग्राहक: हे 200 रुपये."></textarea>
   <div class="actions"><button class="primary" onclick="startAssistantVoice()">🎙️ Start Voice</button><button class="secondary" onclick="stopVoice()">⏹️ Stop</button><button class="primary" onclick="analyzeAssistant()">🔎 Analyze Conversation</button></div>
+  <div class="long-voice">
+    <b>📡 Long-Distance Voice Mode</b>
+    <div class="mini">फोन हातात ठेवून/दुकानात थोडे दूरून बोला. शक्य असल्यास शांत जागा किंवा headset वापरा.</div>
+    <div class="long-voice-row" style="margin-top:10px">
+      <button id="longVoiceBtn" class="mic-big" onclick="toggleLongVoice()" aria-label="Start long-distance voice">🎙️</button>
+      <div>
+        <b id="voiceState">Ready to listen</b>
+        <div class="mini">Tap microphone → बोला → Stop → तपासा</div>
+      </div>
+    </div>
+    <div class="voice-meter"><i id="voiceMeterBar"></i></div>
+    <div id="liveTranscript" class="live-transcript">🎤 तुमचे बोलणे येथे दिसेल…</div>
+  </div>
+
   <div id="assistantStatus" class="status hidden"></div>
+<div class="notice" style="margin-top:12px">
+  🔐 <b>Voice privacy:</b> Voice starts only after you tap the microphone. Browser/PWA background microphone support varies by Android/browser and is not guaranteed when the screen is off. For reliable screen-off listening, use the future Android foreground-service version.
+</div>
+
  </div>
- <div class="card"><h2>🧾 Detected Sale</h2><p class="muted">AI proposal येथे दिसेल. Quantity, price, customer आणि paid amount बदलून मग Confirm करा.</p><div id="proposalEmpty" class="notice">अजून sale detect केलेली नाही.</div></div>
+ <div class="card"><h2>🧾 Detected Sale</h2><p class="muted">AI proposal येथे दिसेल. Voice चुकीचे ऐकू शकते—Quantity, price, customer आणि paid amount तपासा, मगच Confirm करा.</p><div id="proposalEmpty" class="notice">अजून sale detect केलेली नाही.</div></div>
 </section>
 
 <section id="inventory" class="hidden">
@@ -383,10 +415,85 @@ function setAiManualStatus(text,type=''){const x=$('aiManualStatus');x.textConte
 async function aiAutoFillManual(){const text=$('manualAiText').value.trim();if(!text){setAiManualStatus('कृपया sale लिहा किंवा voice वापरा.','warn');return}setAiManualStatus('🤖 AI form भरत आहे...');try{const r=await api('/api/analyze-conversation',{method:'POST',body:JSON.stringify({transcript:text,language:$('manualLang').value})});if(!r.ok)throw new Error(await r.text());const j=await r.json();const p=j.result||{};if(!Array.isArray(p.items)||!p.items.length){setAiManualStatus('⚠️ Sale item सापडला नाही. Product, quantity आणि price स्पष्ट लिहा.','warn');return}manualItems=p.items.map(x=>({product:String(x.product||''),quantity:Number(x.quantity)||1,unit_price:Number(x.unit_price)||0}));$('manualCustomer').value=p.customer||'';$('manualPaid').value=Number(p.paid)||0;renderManualItems();recalcManual();setAiManualStatus('✅ AI ने manual form भरला. आता माहिती तपासा आणि Save Manual Sale दाबा.');}catch(e){setAiManualStatus('❌ AI Auto Fill failed. Backend/AI configuration तपासा.','err')}}
 function startManualVoice(){startVoiceFor('manualAiText',$('manualLang').value)}
 
+
+let longVoiceActive=false;
+let audioContext=null, analyser=null, micStream=null, meterRAF=null;
+
 function startAssistantVoice(){startVoiceFor('conversation',$('lang2').value)}
+
+async function toggleLongVoice(){
+  if(longVoiceActive){stopLongVoice();return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){setStatus('assistantStatus','⚠️ तुमच्या browser मध्ये voice recognition उपलब्ध नाही. Chrome वापरा.','warn');return;}
+  stopVoice();
+  recognition=new SR();
+  recognition.lang=$('lang2').value;
+  recognition.continuous=true;
+  recognition.interimResults=true;
+  longVoiceActive=true;
+  $('longVoiceBtn').classList.add('listening');
+  $('longVoiceBtn').textContent='⏹️';
+  $('voiceState').textContent='Listening… दूरून स्पष्ट बोला';
+  $('liveTranscript').textContent='🎙️ ऐकत आहे…';
+  try{await startVoiceMeter();}catch(e){}
+  recognition.onresult=e=>{
+    let finalText='', interim='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t=e.results[i][0].transcript;
+      if(e.results[i].isFinal) finalText+=t+' ';
+      else interim+=t;
+    }
+    const el=$('conversation');
+    if(finalText) el.value+=(el.value?' ':'')+finalText.trim();
+    $('liveTranscript').textContent=(el.value||interim||'🎙️ ऐकत आहे…').trim();
+    $('msg').value=el.value;
+  };
+  recognition.onerror=e=>{
+    if(e.error==='no-speech') return;
+    toast('Voice error: '+e.error);
+  };
+  recognition.onend=()=>{
+    if(longVoiceActive){try{recognition.start()}catch(e){}}
+  };
+  try{recognition.start();toast('🎙️ Long-distance voice started');}
+  catch(e){stopLongVoice();setStatus('assistantStatus','⚠️ Microphone सुरू करता आला नाही.','err');}
+}
+function stopLongVoice(){
+  longVoiceActive=false;
+  if(recognition){try{recognition.onend=null;recognition.stop()}catch(e){}recognition=null;}
+  stopVoiceMeter();
+  const b=$('longVoiceBtn'); if(b){b.classList.remove('listening');b.textContent='🎙️';}
+  if($('voiceState'))$('voiceState').textContent='Stopped — transcript तपासा';
+  toast('⏹️ Voice stopped');
+}
+async function startVoiceMeter(){
+  if(!navigator.mediaDevices?.getUserMedia)return;
+  micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  audioContext=new (window.AudioContext||window.webkitAudioContext)();
+  analyser=audioContext.createAnalyser(); analyser.fftSize=256;
+  audioContext.createMediaStreamSource(micStream).connect(analyser);
+  const data=new Uint8Array(analyser.frequencyBinCount);
+  const tick=()=>{
+    if(!analyser)return;
+    analyser.getByteFrequencyData(data);
+    let sum=0; for(const v of data)sum+=v;
+    const level=Math.min(100,(sum/data.length)/2.2);
+    const bar=$('voiceMeterBar'); if(bar)bar.style.width=level+'%';
+    meterRAF=requestAnimationFrame(tick);
+  };
+  tick();
+}
+function stopVoiceMeter(){
+  if(meterRAF)cancelAnimationFrame(meterRAF); meterRAF=null;
+  if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null;}
+  if(audioContext){try{audioContext.close()}catch(e){}audioContext=null;}
+  analyser=null;
+  const bar=$('voiceMeterBar');if(bar)bar.style.width='0';
+}
+
 function voice(){startVoiceFor('msg',$('language').value)}
 function startVoiceFor(id,language){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('या browser मध्ये Speech Recognition उपलब्ध नाही. Chrome वापरा.');return}if(recognition){try{recognition.stop()}catch(e){}}recognition=new SR();recognition.lang=language;recognition.continuous=true;recognition.interimResults=false;recognition.onstart=()=>toast('🎙️ Listening...');recognition.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){const el=$(id);el.value+=(el.value?'\n':'')+e.results[i][0].transcript;}}};recognition.onerror=e=>toast('Voice error: '+e.error);recognition.onend=()=>toast('⏹️ Voice stopped');recognition.start()}
-function stopVoice(){if(recognition){try{recognition.stop()}catch(e){}recognition=null}}
+function stopVoice(){if(longVoiceActive){stopLongVoice();return}if(recognition){try{recognition.stop()}catch(e){}recognition=null}}
 function clearConversation(){$('msg').value='';$('conversation').value='';$('chat').innerHTML='<div class="bubble ai">👋 नवीन conversation सुरू करा.</div>';if($('status'))$('status').classList.add('hidden')}
 
 
@@ -459,6 +566,23 @@ function calcGST(){
   const a=Number($('toolGstPrice').value)||0, r=Number($('toolGstRate').value)||0;
   const gst=a*r/100;
   $('gstResult').textContent='GST: '+money(gst)+' • Total: '+money(a+gst);
+}
+
+
+let deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); deferredInstallPrompt=e;
+  const b=$('installBtn'); if(b)b.classList.remove('hidden');
+});
+async function installApp(){
+  if(!deferredInstallPrompt){toast('📲 Browser menu मधून “Install app” निवडा.');return;}
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt=null;
+  const b=$('installBtn'); if(b)b.classList.add('hidden');
+}
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 }
 
 window.addEventListener('DOMContentLoaded',async()=>{renderManualItems();recalcManual();if(localStorage.getItem('aiShopName')&&$('shopName'))$('shopName').value=localStorage.getItem('aiShopName');await startApp();});
