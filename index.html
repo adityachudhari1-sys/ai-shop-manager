@@ -20,7 +20,7 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
 @media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}
 @media(max-width:560px){.app{padding:9px}.top{align-items:flex-start}.profile{display:flex;align-items:center;gap:5px;flex-wrap:wrap;justify-content:flex-end;font-size:12px}.profile button{font-size:12px;padding:8px 10px}.hero{padding:22px;border-radius:22px}.hero h2{font-size:27px}.products{grid-template-columns:1fr}.itemrow{grid-template-columns:1fr 1fr}.itemrow input:first-child{grid-column:1/-1}.itemrow button{grid-column:2}.input{flex-wrap:wrap}.input textarea{min-width:100%}.grid{gap:8px}.metric{padding:13px}.metric strong{font-size:21px}}
 </style>
-</head>
+<style>#accountIconBtn{display:inline-flex!important;align-items:center;justify-content:center!important;visibility:visible!important;opacity:1!important}@media(max-width:700px){.profile{display:flex!important;visibility:visible!important}.profile #accountIconBtn{display:inline-flex!important;width:46px;height:46px;font-size:23px;flex:0 0 46px}.brand h1{font-size:18px}.brand span{display:none}}</style></head>
 <body>
 <div id="auth" class="auth hidden">
  <main class="authbox">
@@ -48,6 +48,7 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
 <header class="top">
  <div class="brand"><div class="logo">🏪</div><div><h1>AI Shop Manager</h1><span class="muted">V5 Real AI + V4 Voice & Conversation</span></div></div>
  <div class="profile">
+  <button id="accountIconBtn" aria-label="Login or Register" title="Login / Register" onclick="openAuth('login')" style="width:44px;height:44px;border-radius:50%;padding:0;font-size:22px;background:#eef2ff;color:#3730a3;border:2px solid #c7d2fe;box-shadow:0 4px 12px rgba(0,0,0,.12);cursor:pointer">👤</button>
   🤖 <span id="accountName">Guest</span>
   <button id="loginOpenBtn" onclick="openAuth('login')" style="margin-left:8px;padding:6px 9px;border-radius:9px;background:#e0e7ff;color:#3730a3;box-shadow:none">Login / Register</button>
   <button id="logoutBtn" onclick="logout()" class="hidden" style="margin-left:8px;padding:6px 9px;border-radius:9px;background:#fee2e2;color:#b91c1c;box-shadow:none">Logout</button>
