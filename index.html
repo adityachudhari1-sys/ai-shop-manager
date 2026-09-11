@@ -3,7 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI Shop Manager — V5 + V4</title>
+<title>AI Shop Manager — Simple Shop & Profit Manager</title>
+
+<link rel="canonical" href="https://adityachudhari1-sys.github.io/ai-shop-manager/">
+<meta property="og:title" content="AI Shop Manager — Free Tools for Small Shopkeepers">
+<meta property="og:description" content="Free shop profit, GST, discount and stock calculators plus AI-assisted sales entry for small shopkeepers.">
+<meta property="og:url" content="https://adityachudhari1-sys.github.io/ai-shop-manager/">
+<meta name="robots" content="index,follow">
+<meta name="description" content="AI Shop Manager helps small shopkeepers manage sales, stock, customer credit and profit using simple manual or AI-assisted entry.">
+<meta name="keywords" content="shop manager, GST calculator, profit calculator, inventory, invoice, kirana shop, retail shop">
+<!-- Google AdSense: replace ca-pub-XXXXXXXXXXXXXXXX with your own approved Publisher ID after AdSense approval -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+<style>
+.ad-slot{margin:14px 0;padding:10px;border:1px dashed #d9deeb;border-radius:15px;background:#fff;text-align:center;min-height:90px}
+.ad-label{font-size:10px;color:#9aa3b8;letter-spacing:.08em;margin-bottom:5px}
+.free-tools{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tool-card{padding:13px;border:1px solid var(--line);border-radius:15px;background:#fff}
+.tool-card input{margin-top:6px}
+@media(max-width:850px){.free-tools{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.free-tools{grid-template-columns:1fr 1fr}}
+</style>
+
 <style>
 :root{--p:#6757ff;--p2:#8b64ff;--c:#18c8ff;--pk:#ff4f9a;--g:#19c37d;--o:#ff9d3d;--bg:#f6f8ff;--tx:#18213a;--mu:#71809d;--line:#e8ebf5}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--tx);background:radial-gradient(circle at 5% 0,#e8e5ff,transparent 30%),radial-gradient(circle at 95% 5%,#d8f8ff,transparent 30%),var(--bg)}
@@ -20,7 +40,17 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
 @media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}
 @media(max-width:560px){.app{padding:9px}.top{align-items:flex-start}.profile{display:flex;align-items:center;gap:5px;flex-wrap:wrap;justify-content:flex-end;font-size:12px}.profile button{font-size:12px;padding:8px 10px}.hero{padding:22px;border-radius:22px}.hero h2{font-size:27px}.products{grid-template-columns:1fr}.itemrow{grid-template-columns:1fr 1fr}.itemrow input:first-child{grid-column:1/-1}.itemrow button{grid-column:2}.input{flex-wrap:wrap}.input textarea{min-width:100%}.grid{gap:8px}.metric{padding:13px}.metric strong{font-size:21px}}
 </style>
-<style>#accountIconBtn{display:inline-flex!important;align-items:center;justify-content:center!important;visibility:visible!important;opacity:1!important}@media(max-width:700px){.profile{display:flex!important;visibility:visible!important}.profile #accountIconBtn{display:inline-flex!important;width:46px;height:46px;font-size:23px;flex:0 0 46px}.brand h1{font-size:18px}.brand span{display:none}}</style></head>
+<style>#accountIconBtn{display:inline-flex!important;align-items:center;justify-content:center!important;visibility:visible!important;opacity:1!important}@media(max-width:700px){.profile{display:flex!important;visibility:visible!important}.profile #accountIconBtn{display:inline-flex!important;width:46px;height:46px;font-size:23px;flex:0 0 46px}.brand h1{font-size:18px}.brand span{display:none}}</style>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebSite",
+  "name":"AI Shop Manager",
+  "url":"https://adityachudhari1-sys.github.io/ai-shop-manager/",
+  "description":"Free tools and AI-assisted shop management for small shopkeepers."
+}
+</script>
+</head>
 <body>
 <div id="auth" class="auth hidden">
  <main class="authbox">
@@ -60,6 +90,14 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
  <p>मराठी, हिंदी किंवा English मध्ये बोला. AI conversation समजून sale proposal तयार करेल. तुम्ही तपासा आणि <b>Confirm</b> केल्यावरच stock आणि customer ledger update होईल.</p>
  <button class="white" onclick="go('assistant')">🎙️ Start Smart Conversation</button>
 </section>
+
+<div class="ad-slot" id="adTop">
+  <div class="ad-label">ADVERTISEMENT</div>
+  <!-- AdSense display ad: after approval, create an ad unit and paste its INS/AD SLOT code here. -->
+  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+</div>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 
 <nav class="nav">
  <button class="active" data-tab="dashboard" onclick="go('dashboard')">🏠 Dashboard</button>
@@ -104,7 +142,31 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
   <button class="pink" onclick="go('customers')">📒 Customer Udhar</button>
   <button class="green" onclick="digitalBill()">🧾 Create Bill</button>
  </div></div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="sectionhead"><h3>🧮 Free Shop Tools</h3><span class="tag ok">No account needed</span></div>
+    <p class="muted">पहिले उपयोगी calculation करा; नंतर हिशोब save करण्यासाठी Free Account तयार करा.</p>
+    <div class="free-tools">
+      <div class="tool-card"><b>💰 Profit</b><input id="toolSales" type="number" min="0" placeholder="Sales ₹"><input id="toolCost" type="number" min="0" placeholder="Cost ₹"><button class="green" style="margin-top:7px;width:100%" onclick="calcProfit()">Calculate</button><div class="mini" id="profitResult"></div></div>
+      <div class="tool-card"><b>🏷️ Discount</b><input id="toolPrice" type="number" min="0" placeholder="Price ₹"><input id="toolDisc" type="number" min="0" max="100" placeholder="Discount %"><button class="secondary" style="margin-top:7px;width:100%" onclick="calcDiscount()">Calculate</button><div class="mini" id="discountResult"></div></div>
+      <div class="tool-card"><b>📦 Stock Value</b><input id="toolQty" type="number" min="0" placeholder="Quantity"><input id="toolUnit" type="number" min="0" placeholder="Unit price ₹"><button class="orange" style="margin-top:7px;width:100%" onclick="calcStockValue()">Calculate</button><div class="mini" id="stockResult"></div></div>
+      <div class="tool-card"><b>🧾 GST</b><input id="toolGstPrice" type="number" min="0" placeholder="Amount ₹"><input id="toolGstRate" type="number" min="0" placeholder="GST %"><button class="primary" style="margin-top:7px;width:100%" onclick="calcGST()">Calculate</button><div class="mini" id="gstResult"></div></div>
+    </div>
+    <div class="notice" style="margin-top:12px">⭐ <b>Want to save today's calculation?</b> Create a Free Shop Account and keep your sales, stock and customer ledger in one place.</div>
+  </div>
+
 </section>
+
+  <div class="card" style="margin-top:14px">
+    <h2>🏪 Simple Shop Management for India</h2>
+    <p class="muted">AI Shop Manager is designed for small retailers who want an easier way to track sales, stock, customer credit (udhar) and daily reports.</p>
+    <div class="features">
+      <div class="feature"><b>💰 Calculate shop profit</b><br><span class="muted">Compare sales and cost to estimate your profit.</span></div>
+      <div class="feature"><b>🎙️ Speak your sale</b><br><span class="muted">Tell the app what the customer bought and review the AI proposal before saving.</span></div>
+      <div class="feature"><b>📒 Track customer udhar</b><br><span class="muted">Keep pending customer payments in one place.</span></div>
+      <div class="feature"><b>📦 Watch stock</b><br><span class="muted">See products and low-stock alerts from your dashboard.</span></div>
+    </div>
+  </div>
 
 <section id="assistant" class="hidden">
  <div class="card">
@@ -294,6 +356,26 @@ function clearConversation(){$('msg').value='';$('conversation').value='';$('cha
 function saveSettings(){localStorage.setItem('aiShopName',$('shopName').value.trim()||'My Shop');toast('Shop settings saved');loadData()}
 async function testBackend(){setStatus('backendStatus','Testing backend...');try{const r=await api('/api/health');if(!r.ok)throw new Error();const j=await r.json();setStatus('backendStatus','✅ Backend connected. AI configured: '+(j.ai_configured?'Yes':'No')+'. Model: '+(j.model||'configured'));}catch(e){setStatus('backendStatus','❌ Backend not reachable. Check HTTPS URL, CORS and deployment.','err')}}
 function digitalBill(){toast('🧾 Digital bill flow: select a product and quantity in the billing feature of your backend version.')}
+
+
+function calcProfit(){
+  const s=Number($('toolSales').value)||0, c=Number($('toolCost').value)||0;
+  $('profitResult').textContent='Profit: '+money(s-c);
+}
+function calcDiscount(){
+  const p=Number($('toolPrice').value)||0, d=Number($('toolDisc').value)||0;
+  const save=p*d/100, final=p-save;
+  $('discountResult').textContent='Pay: '+money(final)+' • Save: '+money(save);
+}
+function calcStockValue(){
+  const q=Number($('toolQty').value)||0, u=Number($('toolUnit').value)||0;
+  $('stockResult').textContent='Value: '+money(q*u);
+}
+function calcGST(){
+  const a=Number($('toolGstPrice').value)||0, r=Number($('toolGstRate').value)||0;
+  const gst=a*r/100;
+  $('gstResult').textContent='GST: '+money(gst)+' • Total: '+money(a+gst);
+}
 
 window.addEventListener('DOMContentLoaded',async()=>{renderManualItems();recalcManual();if(localStorage.getItem('aiShopName')&&$('shopName'))$('shopName').value=localStorage.getItem('aiShopName');await startApp();});
 </script>
