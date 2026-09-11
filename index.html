@@ -16,15 +16,36 @@ button{border:0;border-radius:11px;padding:11px 15px;font-weight:800;cursor:poin
 textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-radius:11px;font-size:16px;background:#fff;color:var(--tx);outline:none}textarea:focus,input:focus,select:focus{border-color:var(--p)}label{font-size:13px;font-weight:800;display:block;margin:8px 0 5px}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.features{display:grid;gap:9px}.feature{padding:13px;border-radius:14px;background:linear-gradient(135deg,#fff,#f7f7ff);border:1px solid var(--line)}
 .products{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.product{padding:14px;border:1px solid var(--line);border-radius:15px;background:#fff}.bar{height:7px;background:#edf0f7;border-radius:10px;margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--c),var(--p));border-radius:10px}.hidden{display:none!important}.toast{position:fixed;right:15px;bottom:15px;background:#17213a;color:#fff;padding:13px 16px;border-radius:12px;display:none;z-index:99}.status{padding:10px;border-radius:11px;background:#edf7ee;margin-top:10px;font-size:14px}.status.warn{background:#fff4df}.status.err{background:#feecec}
 .itemrow{display:grid;grid-template-columns:1.5fr .7fr .8fr 42px;gap:7px;align-items:end;margin:9px 0;padding:10px;border:1px solid var(--line);border-radius:13px;background:#fff}.itemrow button{padding:10px}.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden}.table th,.table td{padding:11px;border-bottom:1px solid #eef0f4;text-align:left;white-space:nowrap}.table th{background:#f8fafc}.notice{padding:12px;border-radius:13px;background:#eef6ff;margin-top:10px}.footer{text-align:center;color:var(--mu);padding:28px 10px}.footer a{color:#4f46e5;text-decoration:none;margin:0 7px}.modal{display:none;position:fixed;inset:0;background:#0008;z-index:80;padding:15px;overflow:auto}.modalbox{max-width:680px;margin:30px auto;background:#fff;border-radius:22px;padding:19px}.modalbox h2{margin-top:0}.close{float:right;background:#f1f3f8;color:#333}.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:10px}.mini{font-size:12px;color:var(--mu)}
+.auth{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:18px;background:linear-gradient(135deg,#eeeaff,#dff8ff)}.authbox{width:min(440px,94vw);background:#fff;border-radius:24px;padding:24px;box-shadow:0 30px 90px #26365d30}.authbox h2{margin:0 0 5px}.auth-tabs{display:flex;gap:8px;margin:18px 0}.auth-tabs button{flex:1;background:#eef1ff;color:#5149aa}.auth-tabs button.active{background:var(--p);color:#fff}.auth.hidden{display:none}.legalbox{line-height:1.65}.legalbox h3{margin-top:20px}
 @media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}
 @media(max-width:560px){.app{padding:9px}.top{align-items:flex-start}.profile{display:none}.hero{padding:22px;border-radius:22px}.hero h2{font-size:27px}.products{grid-template-columns:1fr}.itemrow{grid-template-columns:1fr 1fr}.itemrow input:first-child{grid-column:1/-1}.itemrow button{grid-column:2}.input{flex-wrap:wrap}.input textarea{min-width:100%}.grid{gap:8px}.metric{padding:13px}.metric strong{font-size:21px}}
 </style>
 </head>
 <body>
-<div class="app">
+<div id="auth" class="auth">
+ <main class="authbox">
+  <div style="font-size:38px">🏪</div>
+  <h2>AI Shop Manager</h2>
+  <p class="muted">Private multi-user shop dashboard</p>
+  <div class="auth-tabs">
+   <button id="loginTab" class="active" onclick="authMode('login')">Login</button>
+   <button id="registerTab" onclick="authMode('register')">Create account</button>
+  </div>
+  <div id="authStatus" class="status hidden"></div>
+  <form onsubmit="submitAuth(event)">
+   <div id="shopField" class="hidden"><label>Shop name</label><input id="authShop" placeholder="My Shop"></div>
+   <label>Email</label><input id="authEmail" type="email" required placeholder="you@example.com">
+   <label>Password</label><input id="authPassword" type="password" minlength="6" required placeholder="At least 6 characters">
+   <button id="authSubmit" class="primary" style="width:100%;margin-top:8px">Login</button>
+  </form>
+  <p class="mini" style="margin-top:16px">Your shop data is isolated by your account. AI results must be reviewed before confirming sales.</p>
+ </main>
+</div>
+
+<div class="app hidden" id="app">
 <header class="top">
  <div class="brand"><div class="logo">🏪</div><div><h1>AI Shop Manager</h1><span class="muted">V5 Real AI + V4 Voice & Conversation</span></div></div>
- <div class="profile">🤖 AI Powered</div>
+ <div class="profile">🤖 <span id="accountName">AI Powered</span> <button onclick="logout()" style="margin-left:8px;padding:6px 9px;border-radius:9px;background:#fee2e2;color:#b91c1c;box-shadow:none">Logout</button></div>
 </header>
 
 <section class="hero">
@@ -37,9 +58,11 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
  <button class="active" data-tab="dashboard" onclick="go('dashboard')">🏠 Dashboard</button>
  <button data-tab="assistant" onclick="go('assistant')">🤖 AI Assistant</button>
  <button data-tab="inventory" onclick="go('inventory')">📦 Inventory</button>
+ <button data-tab="manual" onclick="go('manual')">✍️ Manual Entry</button>
  <button data-tab="customers" onclick="go('customers')">👥 Customers</button>
  <button data-tab="reports" onclick="go('reports')">📊 Reports</button>
  <button data-tab="settings" onclick="go('settings')">⚙️ Settings</button>
+ <button data-tab="legal" onclick="go('legal')">📜 Legal</button>
 </nav>
 
 <section id="dashboard">
@@ -70,6 +93,7 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
  <div class="card" style="margin-top:14px"><h3>⚡ Fast Actions</h3><div class="actions">
   <button class="primary" onclick="go('assistant')">➕ Quick Sale</button>
   <button class="secondary" onclick="go('inventory')">📦 Add / View Stock</button>
+  <button class="orange" onclick="go('manual')">✍️ Manual / AI Entry</button>
   <button class="pink" onclick="go('customers')">📒 Customer Udhar</button>
   <button class="green" onclick="digitalBill()">🧾 Create Bill</button>
  </div></div>
@@ -94,6 +118,34 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
  <div class="card"><div class="sectionhead"><h2>📦 Smart Inventory</h2><button class="secondary" onclick="loadStock()">🔄 Refresh</button></div><div id="inventoryBox" class="products"><div class="product">Loading...</div></div></div>
 </section>
 
+<section id="manual" class="hidden">
+ <div class="layout">
+  <div class="card">
+   <div class="sectionhead"><h2>✍️ Manual Sale Entry</h2><span class="tag ok">You control the data</span></div>
+   <p class="muted">Product, quantity, price, customer आणि payment स्वतः भरा. Save केल्यावर stock आणि ledger update होतील.</p>
+   <label>Customer</label><input id="manualCustomer" placeholder="उदा. Ramesh">
+   <div id="manualItems"></div>
+   <div class="actions"><button class="secondary" onclick="addManualItem()">➕ Add Item</button><button class="green" onclick="saveManualSale()">✅ Save Manual Sale</button></div>
+   <label>Paid (₹)</label><input id="manualPaid" type="number" min="0" step="0.01" value="0" oninput="recalcManual()">
+   <div class="notice"><b>Total:</b> ₹<span id="manualTotal">0.00</span> &nbsp; <b>Udhar:</b> ₹<span id="manualPending">0.00</span></div>
+   <div id="manualStatus" class="status hidden"></div>
+  </div>
+  <div class="card">
+   <div class="sectionhead"><h2>🤖 AI Auto Entry</h2><span class="tag ok">Automatic form filling</span></div>
+   <p class="muted">Natural language किंवा voice मध्ये sale लिहा. AI customer, products, quantity, price आणि paid amount form मध्ये आपोआप भरेल. <b>Save करण्यापूर्वी तपासा.</b></p>
+   <label>Language</label><select id="manualLang"><option value="mr-IN">मराठी</option><option value="hi-IN">हिंदी</option><option value="en-IN">English</option></select>
+   <label>Say / Type</label><textarea id="manualAiText" rows="5" placeholder="उदा. रमेशला 2 साबण 40 रुपये दराने आणि 1 शॅम्पू 120 रुपयांना दिला. त्याने 200 रुपये दिले."></textarea>
+   <div class="actions"><button class="voice" onclick="startManualVoice()">🎙️</button><button class="primary" onclick="aiAutoFillManual()">✨ AI Auto Fill</button><button class="secondary" onclick="stopVoice()">⏹️ Stop</button></div>
+   <div id="aiManualStatus" class="status hidden"></div>
+  </div>
+ </div>
+ <div class="card" style="margin-top:14px">
+  <div class="sectionhead"><h2>📦 Add Product Manually</h2><button class="secondary" onclick="loadStock()">🔄 Refresh Stock</button></div>
+  <div class="products"><div><label>Product name</label><input id="newProductName" placeholder="Soap"></div><div><label>Price (₹)</label><input id="newProductPrice" type="number" min="0" step="0.01" placeholder="40"></div><div><label>Opening stock</label><input id="newProductStock" type="number" min="0" placeholder="100"></div></div>
+  <div class="actions"><button class="primary" onclick="saveProductManual()">➕ Add Product</button></div>
+ </div>
+</section>
+
 <section id="customers" class="hidden">
  <div class="card"><div class="sectionhead"><h2>👥 Customer Udhar / Ledger</h2><button class="secondary" onclick="loadCustomers()">🔄 Refresh</button></div><div id="customersBox" class="products"><div class="product">Loading...</div></div></div>
  <div class="card"><h3>💵 Record Payment</h3><div class="products"><div><label>Customer name</label><input id="paymentCustomer" placeholder="Ramesh"></div><div><label>Payment ₹</label><input id="paymentAmount" type="number" min="1" placeholder="500"></div></div><div class="actions"><button class="green" onclick="recordPayment()">Record Payment</button></div><div class="notice">Payment endpoint तुमच्या V5 backend मध्ये सध्या उपलब्ध नसेल तर हा भाग नंतर backend मध्ये जोडावा लागेल.</div></div>
@@ -104,12 +156,32 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
 </section>
 
 <section id="settings" class="hidden">
- <div class="card"><h2>⚙️ Shop Settings</h2><label>Shop name</label><input id="shopName" value="My Shop"><label>AI Backend URL</label><input id="apiBaseInput" placeholder="https://your-backend-domain.com"><div class="actions"><button class="primary" onclick="saveSettings()">Save Settings</button><button class="secondary" onclick="testBackend()">🔌 Test Backend</button></div><div class="notice">🔐 OpenAI API key येथे ठेवू नका. ती फक्त backend/server च्या environment variable मध्ये ठेवायची आहे.</div><div id="backendStatus" class="status hidden"></div></div>
+ <div class="card"><h2>⚙️ Shop Settings</h2><label>Shop name</label><input id="shopName" value="My Shop"><div class="actions"><button class="primary" onclick="saveSettings()">Save Shop Name</button><button class="secondary" onclick="testBackend()">🔌 Test Backend</button></div><div class="notice">🔐 OpenAI API key येथे ठेवू नका. ती फक्त backend/server च्या environment variable मध्ये ठेवायची आहे.</div><div id="backendStatus" class="status hidden"></div></div>
 </section>
+
+<section id="legal" class="hidden">
+ <div class="card legalbox">
+  <h2>📜 Legal & Support</h2>
+  <p class="muted">All essential legal information is included in this single HTML file.</p>
+  <div class="notice"><b>Developer/Business:</b> Aditya G. Chudhari<br><b>Email:</b> adityachudhari1@gmail.com</div>
+  <h3>Privacy Policy</h3>
+  <p>AI Shop Manager may process account details, shop data, customer information, products, prices, stock, sales, payment/credit records and voice/text input needed to provide the service. Data may be used to operate the service, provide AI-assisted sale previews, maintain records, support users, improve security and meet applicable legal obligations.</p>
+  <h3>Terms of Use</h3>
+  <p>Users are responsible for verifying AI-generated sale proposals, prices, quantities, payments and records before confirmation. The service is software assistance and is not accounting, tax, legal or financial advice. Keep account credentials secure and use the service lawfully.</p>
+  <h3>AI Disclaimer</h3>
+  <p>AI-generated results can be incorrect. AI may misunderstand product names, quantities, prices, customer names or payment amounts. Always review and correct the sale preview before selecting Confirm Sale. AI output is not autonomous transaction authority.</p>
+  <h3>Contact</h3>
+  <p>For support, privacy or grievance requests, contact <b>adityachudhari1@gmail.com</b>.</p>
+ </div>
+</section>
+<section id="privacy" class="hidden"><div class="card legalbox"><h2>🔒 Privacy Policy</h2><p><b>Effective:</b> 11 September 2026</p><p>We may process account information, customer/shop information, product and transaction records, and voice/text input used to provide the service. AI processing may be used to create proposed sale structures. Review actual vendors and data practices before public launch.</p><button class="secondary" onclick="go('legal')">← Back to Legal</button></div></section>
+<section id="terms" class="hidden"><div class="card legalbox"><h2>📜 Terms of Use</h2><p>AI Shop Manager provides shop-management software. Users must verify AI-generated proposals before confirmation and are responsible for lawful use and the accuracy of records they enter.</p><button class="secondary" onclick="go('legal')">← Back to Legal</button></div></section>
+<section id="disclaimer" class="hidden"><div class="card legalbox"><h2>⚠️ AI Disclaimer</h2><p>AI output can be wrong. Verify product, quantity, price, customer and payment details before confirming a transaction. The service is not accounting, tax, legal or financial advice.</p><button class="secondary" onclick="go('legal')">← Back to Legal</button></div></section>
+<section id="contact" class="hidden"><div class="card legalbox"><h2>📩 Contact</h2><p><b>Developer/Business:</b> Aditya G. Chudhari</p><p><b>Email:</b> adityachudhari1@gmail.com</p><button class="secondary" onclick="go('legal')">← Back to Legal</button></div></section>
 
 <footer class="footer">
  <div>© 2026 AI Shop Manager</div>
- <p><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a><a href="ai-disclaimer.html">AI Disclaimer</a><a href="contact.html">Contact</a></p>
+ <p><a href="#" onclick="go('privacy');return false">Privacy Policy</a><a href="#" onclick="go('terms');return false">Terms of Use</a><a href="#" onclick="go('disclaimer');return false">AI Disclaimer</a><a href="#" onclick="go('contact');return false">Contact</a></p>
  <div>Developed by Aditya G. Chudhari</div>
  <div class="mini">AI suggestions are proposals; confirm important business records before saving.</div>
 </footer>
@@ -139,7 +211,7 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
   or change API_BASE below to your HTTPS backend URL.
   NEVER put OPENAI_API_KEY in this file.
 */
-let API_BASE=localStorage.getItem('aiShopApiBase')||'';
+let API_BASE='';
 let proposal={customer:null,items:[],total:0,paid:0,pending:0};
 let recognition=null;
 
@@ -152,6 +224,14 @@ function setStatus(id,text,type='ok'){const x=$(id);x.textContent=text;x.classNa
 function go(id){document.querySelectorAll('section[id]').forEach(x=>x.classList.add('hidden'));$(id).classList.remove('hidden');document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='inventory')loadStock();if(id==='customers')loadCustomers();if(id==='reports')loadReport()}
 function addBubble(text,type='ai'){const c=$('chat');const d=document.createElement('div');d.className='bubble '+type;d.textContent=text;c.appendChild(d);c.scrollTop=c.scrollHeight}
 function syncConversation(){const v=$('conversation').value;$('msg').value=v}
+
+let authCurrent='login';
+function authMode(mode){authCurrent=mode;document.getElementById('shopField').classList.toggle('hidden',mode!=='register');document.getElementById('authSubmit').textContent=mode==='login'?'Login':'Create account';document.getElementById('loginTab').classList.toggle('active',mode==='login');document.getElementById('registerTab').classList.toggle('active',mode==='register');document.getElementById('authStatus').classList.add('hidden')}
+function authMessage(text,type='warn'){const x=$('authStatus');x.textContent=text;x.className='status '+type;x.classList.remove('hidden')}
+async function submitAuth(e){e.preventDefault();const body={email:$('authEmail').value.trim(),password:$('authPassword').value};if(authCurrent==='register')body.shop_name=$('authShop').value.trim()||'My Shop';try{const r=await fetch('/api/'+authCurrent,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const j=await r.json();if(!r.ok)throw new Error(j.detail||'Request failed');await startApp();toast(authCurrent==='login'?'Welcome back!':'Account created!')}catch(err){authMessage('⚠️ '+err.message,'warn')}}
+async function requireAuth(){try{const r=await fetch('/api/me');if(!r.ok)return false;const u=await r.json();const n=$('accountName');if(n)n.textContent=u.shop_name||u.email||'My Shop';$('app').classList.remove('hidden');$('auth').classList.add('hidden');return true}catch(e){return false}}
+async function startApp(){if(await requireAuth())loadData();else{$('app').classList.add('hidden');$('auth').classList.remove('hidden')}}
+async function logout(){try{await fetch('/api/logout',{method:'POST'})}catch(e){}$('app').classList.add('hidden');$('auth').classList.remove('hidden');authMode('login')}
 
 async function loadData(){await Promise.all([loadReport(),loadStock(),loadCustomers()]);buildInsights()}
 async function loadReport(){
@@ -184,17 +264,28 @@ function recalcSale(){let total=proposal.items.reduce((s,x)=>s+(Number(x.quantit
 function closeSaleModal(){$('saleModal').style.display='none'}
 async function confirmSale(){proposal.customer=$('saleCustomer').value.trim()||null;recalcSale();if(!proposal.items.length){alert('कमीत कमी एक item आवश्यक आहे.');return}if(proposal.items.some(x=>!x.product||x.quantity<1||x.unit_price<0)){alert('Product, quantity आणि price तपासा.');return}try{const r=await api('/api/confirm-sale',{method:'POST',body:JSON.stringify({customer:proposal.customer,items:proposal.items,total:proposal.total,paid:proposal.paid})});if(!r.ok){const t=await r.text();throw new Error(t)}const j=await r.json();closeSaleModal();addBubble(`✅ Sale confirmed. Total ${money(j.total)}, Paid ${money(j.paid)}, Udhar ${money(j.pending)}.`);toast('Sale saved successfully');loadData()}catch(e){alert('Sale save झाली नाही.\n\nBackend URL आणि stock तपासा.')}}
 
+let manualItems=[{product:'',quantity:1,unit_price:0}];
+function renderManualItems(){const box=$('manualItems');box.innerHTML=manualItems.map((x,i)=>`<div class="itemrow"><div><label>Product</label><input value="${esc(x.product)}" oninput="manualItems[${i}].product=this.value"></div><div><label>Qty</label><input type="number" min="1" value="${x.quantity}" oninput="manualItems[${i}].quantity=Number(this.value)||1;recalcManual()"></div><div><label>Unit price</label><input type="number" min="0" value="${x.unit_price}" oninput="manualItems[${i}].unit_price=Number(this.value)||0;recalcManual()"></div><button class="danger" onclick="manualItems.splice(${i},1);renderManualItems();recalcManual()">✕</button></div>`).join('')}
+function addManualItem(){manualItems.push({product:'',quantity:1,unit_price:0});renderManualItems();recalcManual()}
+function recalcManual(){const total=manualItems.reduce((s,x)=>s+(Number(x.quantity)||0)*(Number(x.unit_price)||0),0);const paid=Number($('manualPaid').value)||0;$('manualTotal').textContent=total.toFixed(2);$('manualPending').textContent=Math.max(0,total-paid).toFixed(2);return {total,paid}}
+function setManualStatus(text,type=''){const x=$('manualStatus');x.textContent=text;x.className='status '+type;x.classList.remove('hidden')}
+async function saveManualSale(){const customer=$('manualCustomer').value.trim()||null;const {total,paid}=recalcManual();if(!manualItems.length||manualItems.some(x=>!x.product.trim()||x.quantity<1||x.unit_price<0)){setManualStatus('⚠️ Product, quantity आणि price तपासा.','warn');return}if(paid>total){setManualStatus('⚠️ Paid amount total पेक्षा जास्त असू शकत नाही.','warn');return}try{const r=await api('/api/confirm-sale',{method:'POST',body:JSON.stringify({customer,items:manualItems,total:Math.round(total*100)/100,paid:Math.round(paid*100)/100})});if(!r.ok)throw new Error(await r.text());const j=await r.json();setManualStatus('✅ Manual sale saved. Total '+money(j.total)+', Udhar '+money(j.pending));toast('Manual sale saved');manualItems=[{product:'',quantity:1,unit_price:0}];$('manualCustomer').value='';$('manualPaid').value='0';renderManualItems();recalcManual();loadData()}catch(e){setManualStatus('❌ '+e.message.replace(/\n/g,' '),'err')}}
+async function saveProductManual(){const name=$('newProductName').value.trim();const price=Number($('newProductPrice').value)||0;const stock=Number($('newProductStock').value)||0;if(!name){toast('Product name required');return}try{const r=await api('/api/products',{method:'POST',body:JSON.stringify({name,price,stock})});if(!r.ok)throw new Error(await r.text());toast('📦 Product added');$('newProductName').value='';$('newProductPrice').value='';$('newProductStock').value='';loadStock()}catch(e){toast('Product add failed: '+e.message)}}
+function setAiManualStatus(text,type=''){const x=$('aiManualStatus');x.textContent=text;x.className='status '+type;x.classList.remove('hidden')}
+async function aiAutoFillManual(){const text=$('manualAiText').value.trim();if(!text){setAiManualStatus('कृपया sale लिहा किंवा voice वापरा.','warn');return}setAiManualStatus('🤖 AI form भरत आहे...');try{const r=await api('/api/analyze-conversation',{method:'POST',body:JSON.stringify({transcript:text,language:$('manualLang').value})});if(!r.ok)throw new Error(await r.text());const j=await r.json();const p=j.result||{};if(!Array.isArray(p.items)||!p.items.length){setAiManualStatus('⚠️ Sale item सापडला नाही. Product, quantity आणि price स्पष्ट लिहा.','warn');return}manualItems=p.items.map(x=>({product:String(x.product||''),quantity:Number(x.quantity)||1,unit_price:Number(x.unit_price)||0}));$('manualCustomer').value=p.customer||'';$('manualPaid').value=Number(p.paid)||0;renderManualItems();recalcManual();setAiManualStatus('✅ AI ने manual form भरला. आता माहिती तपासा आणि Save Manual Sale दाबा.');}catch(e){setAiManualStatus('❌ AI Auto Fill failed. Backend/AI configuration तपासा.','err')}}
+function startManualVoice(){startVoiceFor('manualAiText',$('manualLang').value)}
+
 function startAssistantVoice(){startVoiceFor('conversation',$('lang2').value)}
 function voice(){startVoiceFor('msg',$('language').value)}
 function startVoiceFor(id,language){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('या browser मध्ये Speech Recognition उपलब्ध नाही. Chrome वापरा.');return}if(recognition){try{recognition.stop()}catch(e){}}recognition=new SR();recognition.lang=language;recognition.continuous=true;recognition.interimResults=false;recognition.onstart=()=>toast('🎙️ Listening...');recognition.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){const el=$(id);el.value+=(el.value?'\n':'')+e.results[i][0].transcript;}}};recognition.onerror=e=>toast('Voice error: '+e.error);recognition.onend=()=>toast('⏹️ Voice stopped');recognition.start()}
 function stopVoice(){if(recognition){try{recognition.stop()}catch(e){}recognition=null}}
 function clearConversation(){$('msg').value='';$('conversation').value='';$('chat').innerHTML='<div class="bubble ai">👋 नवीन conversation सुरू करा.</div>';if($('status'))$('status').classList.add('hidden')}
 
-function saveSettings(){API_BASE=$('apiBaseInput').value.trim().replace(/\/$/,'');localStorage.setItem('aiShopApiBase',API_BASE);localStorage.setItem('aiShopName',$('shopName').value.trim()||'My Shop');toast('Settings saved');loadData()}
+function saveSettings(){localStorage.setItem('aiShopName',$('shopName').value.trim()||'My Shop');toast('Shop settings saved');loadData()}
 async function testBackend(){setStatus('backendStatus','Testing backend...');try{const r=await api('/api/health');if(!r.ok)throw new Error();const j=await r.json();setStatus('backendStatus','✅ Backend connected. AI configured: '+(j.ai_configured?'Yes':'No')+'. Model: '+(j.model||'configured'));}catch(e){setStatus('backendStatus','❌ Backend not reachable. Check HTTPS URL, CORS and deployment.','err')}}
 function digitalBill(){toast('🧾 Digital bill flow: select a product and quantity in the billing feature of your backend version.')}
 
-window.addEventListener('DOMContentLoaded',()=>{if($('apiBaseInput'))$('apiBaseInput').value=API_BASE;if(localStorage.getItem('aiShopName'))$('shopName').value=localStorage.getItem('aiShopName');loadData()});
+window.addEventListener('DOMContentLoaded',async()=>{renderManualItems();recalcManual();if(localStorage.getItem('aiShopName')&&$('shopName'))$('shopName').value=localStorage.getItem('aiShopName');await startApp();});
 </script>
 </body>
 </html>
