@@ -50,6 +50,21 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
   "description":"Free tools and AI-assisted shop management for small shopkeepers."
 }
 </script>
+
+<style>
+.quick-start{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+.quick-card{border:0;border-radius:20px;padding:18px;text-align:left;cursor:pointer;min-height:125px;background:#fff;box-shadow:0 12px 35px #26365d12;border:1px solid var(--line)}
+.quick-card .ico{font-size:32px;display:block;margin-bottom:8px}
+.quick-card b{font-size:16px}.quick-card span{display:block;color:var(--mu);font-size:12px;margin-top:4px}
+.quick-card.primary-q{background:linear-gradient(135deg,#6757ff,#8b64ff);color:#fff}
+.quick-card.primary-q span{color:#eef0ff}
+.photo-preview{max-width:100%;max-height:220px;border-radius:14px;margin-top:10px;display:none;border:1px solid var(--line)}
+.zero-entry{background:linear-gradient(135deg,#fff,#f7fbff);border:1px solid var(--line);border-radius:20px;padding:17px;margin-top:14px}
+.zero-entry h3{margin:0 0 5px}
+@media(max-width:850px){.quick-start{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.quick-start{grid-template-columns:1fr 1fr;gap:8px}.quick-card{padding:14px;min-height:112px}.quick-card .ico{font-size:27px}}
+</style>
+
 </head>
 <body>
 <div id="auth" class="auth hidden">
@@ -88,8 +103,29 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
 <section class="hero">
  <h2>Run your shop.<br>Just talk to it. ✨</h2>
  <p>मराठी, हिंदी किंवा English मध्ये बोला. AI conversation समजून sale proposal तयार करेल. तुम्ही तपासा आणि <b>Confirm</b> केल्यावरच stock आणि customer ledger update होईल.</p>
- <button class="white" onclick="go('assistant')">🎙️ Start Smart Conversation</button>
+ <div class="actions"><button class="white" onclick="focusVoice()">🎙️ बोलून नोंदवा</button><button class="white" onclick="openPhotoEntry()">📷 बिल / वही फोटो</button></div>
+
 </section>
+
+<div class="quick-start">
+  <button class="quick-card primary-q" onclick="focusVoice()">
+    <span class="ico">🎤</span><b>बोलून नोंदवा</b><span>मराठी / हिंदी / English मध्ये बोला</span>
+  </button>
+  <button class="quick-card" onclick="openPhotoEntry()">
+    <span class="ico">📷</span><b>बिल / वही फोटो</b><span>फोटो निवडा आणि AI कडे पाठवा</span>
+  </button>
+  <button class="quick-card" onclick="go('reports')">
+    <span class="ico">💰</span><b>आजचा हिशोब</b><span>Sales, orders आणि उधारी</span>
+  </button>
+  <button class="quick-card" onclick="go('inventory')">
+    <span class="ico">📦</span><b>स्टॉक</b><span>कमी झालेला stock पटकन पहा</span>
+  </button>
+</div>
+
+<div class="zero-entry">
+  <h3>⚡ Shopkeeper shortcut</h3>
+  <div class="muted">लांबलचक form भरायची गरज नाही. <b>बोला → तपासा → Confirm</b>. Manual Entry फक्त हवे असल्यास वापरा.</div>
+</div>
 
 <div class="ad-slot" id="adTop">
   <div class="ad-label">ADVERTISEMENT</div>
@@ -101,9 +137,9 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
 
 <nav class="nav">
  <button class="active" data-tab="dashboard" onclick="go('dashboard')">🏠 Dashboard</button>
- <button data-tab="assistant" onclick="go('assistant')">🤖 AI Assistant</button>
+ <button data-tab="assistant" onclick="go('assistant')">🎤 AI Assistant</button>
  <button data-tab="inventory" onclick="go('inventory')">📦 Inventory</button>
- <button data-tab="manual" onclick="go('manual')">✍️ Manual Entry</button>
+ <button data-tab="manual" onclick="go('manual')">✍️ Manual (Optional)</button>
  <button data-tab="customers" onclick="go('customers')">👥 Customers</button>
  <button data-tab="reports" onclick="go('reports')">📊 Reports</button>
  <button data-tab="settings" onclick="go('settings')">⚙️ Settings</button>
@@ -120,9 +156,9 @@ textarea,input,select{width:100%;padding:12px;border:1px solid #dfe4f0;border-ra
  <div class="layout">
   <div class="card">
    <div class="sectionhead"><h3>🤖 AI Shop Assistant</h3><span class="mini" id="aiState">Ready</span></div>
-   <div class="chat" id="chat"><div class="bubble ai">👋 नमस्कार! Conversation लिहा किंवा 🎙️ Voice दाबा. उदाहरण: “रमेशला 2 साबण आणि 1 शॅम्पू दिला. त्याने ₹300 दिले.”</div></div>
+   <div class="chat" id="chat"><div class="bubble ai">👋 नमस्कार! फक्त बोला किंवा लिहा. उदाहरण: “रमेशला 2 साबण आणि 1 शॅम्पू दिला. त्याने ₹300 दिले.”</div></div>
    <div class="input">
-    <textarea id="msg" placeholder="ग्राहक + दुकानदार conversation लिहा..."></textarea>
+    <textarea id="msg" placeholder="उदा. “रमेशला 2 साबण 80 रुपये, त्याने 50 रुपये दिले.”"></textarea>
     <button class="voice" onclick="voice()">🎙️</button>
     <button class="primary" onclick="analyze()">Analyze</button>
    </div>
@@ -352,6 +388,54 @@ function voice(){startVoiceFor('msg',$('language').value)}
 function startVoiceFor(id,language){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('या browser मध्ये Speech Recognition उपलब्ध नाही. Chrome वापरा.');return}if(recognition){try{recognition.stop()}catch(e){}}recognition=new SR();recognition.lang=language;recognition.continuous=true;recognition.interimResults=false;recognition.onstart=()=>toast('🎙️ Listening...');recognition.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){const el=$(id);el.value+=(el.value?'\n':'')+e.results[i][0].transcript;}}};recognition.onerror=e=>toast('Voice error: '+e.error);recognition.onend=()=>toast('⏹️ Voice stopped');recognition.start()}
 function stopVoice(){if(recognition){try{recognition.stop()}catch(e){}recognition=null}}
 function clearConversation(){$('msg').value='';$('conversation').value='';$('chat').innerHTML='<div class="bubble ai">👋 नवीन conversation सुरू करा.</div>';if($('status'))$('status').classList.add('hidden')}
+
+
+function focusVoice(){
+  go('assistant');
+  setTimeout(()=>startAssistantVoice(),250);
+}
+function openPhotoEntry(){
+  go('dashboard');
+  setTimeout(()=>{
+    const el=$('shopPhoto');
+    if(el){el.click();}
+    const card=$('photoEntryCard');
+    if(card) card.scrollIntoView({behavior:'smooth',block:'center'});
+  },150);
+}
+function previewShopPhoto(e){
+  const file=e.target.files&&e.target.files[0];
+  const img=$('photoPreview');
+  if(!file||!img)return;
+  if(!file.type.startsWith('image/')){setStatus('photoStatus','⚠️ कृपया image file निवडा.','warn');return;}
+  const reader=new FileReader();
+  reader.onload=()=>{img.src=reader.result;img.style.display='block';setStatus('photoStatus','✅ Photo ready. आता AI Photo Entry दाबा.');};
+  reader.readAsDataURL(file);
+}
+function clearShopPhoto(){
+  const f=$('shopPhoto'),img=$('photoPreview'),st=$('photoStatus');
+  if(f)f.value='';
+  if(img){img.src='';img.style.display='none';}
+  if(st)st.classList.add('hidden');
+}
+async function analyzeShopPhoto(){
+  const file=$('shopPhoto')?.files?.[0];
+  if(!file){setStatus('photoStatus','📷 आधी bill किंवा वहीचा photo निवडा.','warn');return;}
+  if(!API_BASE){setStatus('photoStatus','⚠️ Settings/Login मध्ये FastAPI backend URL जोडल्याशिवाय photo AI analysis चालणार नाही.','warn');return;}
+  setStatus('photoStatus','🤖 Photo AI कडे पाठवत आहे...');
+  try{
+    const fd=new FormData();
+    fd.append('file',file);
+    const r=await fetch(API_BASE+'/api/analyze-image',{method:'POST',body:fd});
+    const raw=await r.text();
+    let j={}; try{j=JSON.parse(raw)}catch(_){throw new Error('Image-analysis endpoint ने JSON response दिला नाही.')}
+    if(!r.ok)throw new Error(j.detail||'Photo analysis failed');
+    if(j.result){proposal=j.result;showProposal(proposal);setStatus('photoStatus','✅ AI ने sale proposal तयार केला. तपासा आणि Confirm करा.');}
+    else setStatus('photoStatus','✅ Photo processed. Backend response मध्ये sale proposal नाही.','warn');
+  }catch(e){
+    setStatus('photoStatus','❌ '+e.message,'err');
+  }
+}
 
 function saveSettings(){localStorage.setItem('aiShopName',$('shopName').value.trim()||'My Shop');toast('Shop settings saved');loadData()}
 async function testBackend(){setStatus('backendStatus','Testing backend...');try{const r=await api('/api/health');if(!r.ok)throw new Error();const j=await r.json();setStatus('backendStatus','✅ Backend connected. AI configured: '+(j.ai_configured?'Yes':'No')+'. Model: '+(j.model||'configured'));}catch(e){setStatus('backendStatus','❌ Backend not reachable. Check HTTPS URL, CORS and deployment.','err')}}
