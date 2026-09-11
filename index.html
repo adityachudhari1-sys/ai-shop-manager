@@ -1,1 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Shop Manager</title>
 
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,Helvetica,sans-serif;
+ background:linear-gradient(135deg,#eef2ff,#f8fafc);
+ color:#172033;
+}
+header{
+ background:linear-gradient(135deg,#4f46e5,#7c3aed,#db2777);
+ color:white;
+ padding:25px 18px;
+ border-radius:0 0 28px 28px;
+}
+.header{
+ max-width:1100px;
+ margin:auto;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:15px;
+}
+.logo{font-size:25px;font-weight:800}
+.tag{opacity:.9;font-size:13px;margin-top:5px}
+.container{max-width:1100px;margin:auto;padding:18px}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:14px;
+ margin-top:18px;
+}
+.card{
+ background:white;
+ border-radius:18px;
+ padding:18px;
+ box-shadow:0 8px 25px #00000010;
+}
+.stat{font-size:28px;font-weight:800;margin-top:8px}
+.label{font-size:13px;color:#64748b}
+.section{margin-top:22px}
+h2{margin:0 0 14px}
+textarea,input,select{
+ width:100%;
+ padding:13px;
+ border:1px solid #dbe1ea;
+ border-radius:12px;
+ font-size:15px;
+ outline:none;
+}
+textarea{min-height:110px;resize:vertical}
+button{
+ border:0;
+ border-radius:12px;
+ padding:12px 17px;
+ font-weight:700;
+ cursor:pointer;
+}
+.primary{
+ background:linear-gradient(135deg,#4f46e5,#7c3aed);
+ color:white;
+}
+.secondary{background:#eef2ff;color:#4338ca}
+.danger{background:#fee2e2;color:#b91c1c}
+.actions{
+ display:flex;
+ flex-wrap:wrap;
+ gap:10px;
+ margin-top:12px;
+}
+.chat{
+ background:#f8fafc;
+ border-radius:15px;
+ padding:15px;
+ min-height:80px;
+ margin-top:12px;
+}
+.msg{
+ padding:10px 13px;
+ border-radius:13px;
+ margin:8px 0;
+ max-width:90%;
+}
+.user{background:#e0e7ff;margin-left:auto}
+.ai{background:#ecfdf5}
+table{
+ width:100%;
+ border-collapse:collapse;
+ background:white;
+ border-radius:15px;
+ overflow:hidden;
+}
+th,td{
+ padding:12px;
+ border-bottom:1px solid #eef0f4;
+ text-align:left;
+}
+th{background:#f8fafc}
+.footer{
+ margin-top:30px;
+ padding:25px 10px;
+ text-align:center;
+ color:#64748b;
+}
+.footer a{
+ color:#4f46e5;
+ text-decoration:none;
+ margin:0 8px;
+}
+.badge{
+ display:inline-block;
+ padding:5px 9px;
+ border-radius:20px;
+ background:#ede9fe;
+ color:#6d28d9;
+ font-size:12px;
+ font-weight:bold;
+}
+.modal{
+ display:none;
+ position:fixed;
+ inset:0;
+ background:#0008;
+ z-index:20;
+ padding:20px;
+ overflow:auto;
+}
+.modalbox{
+ max-width:600px;
+ margin:40px auto;
+ background:white;
+ border-radius:20px;
+ padding:20px;
+}
+.item{
+ border:1px solid #e5e7eb;
+ padding:12px;
+ border-radius:12px;
+ margin:8px 0;
+}
+@media(max-width:800px){
+ .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:520px){
+ .grid{grid-template-columns:1fr 1fr}
+ .header{align-items:flex-start}
+ .logo{font-size:20px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="header">
+<div>
+<div class="logo">🤖 AI Shop Manager</div>
+<div class="tag">Type करू नका. फक्त बोला. दुकानाचा हिशोब सांभाळा.</div>
+</div>
+<span class="badge">AI Powered</span>
+</div>
+</header>
+
+<div class="container">
+
+<div class="grid">
+<div class="card">
+<div class="label">Today's Sales</div>
+<div class="stat" id="sales">₹0</div>
+</div>
+
+<div class="card">
+<div class="label">Orders</div>
+<div class="stat" id="orders">0</div>
+</div>
+
+<div class="card">
+<div class="label">Pending Udhar</div>
+<div class="stat" id="pending">₹0</div>
+</div>
+
+<div class="card">
+<div class="label">Low Stock</div>
+<div class="stat" id="low">0</div>
+</div>
+</div>
+
+<div class="section card">
+<h2>🤖 AI Assistant</h2>
+
+<p>
+उदा.:
+<strong>“रमेशने 2 साबण आणि 1 शॅम्पू घेतला. त्याने ₹300 दिले.”</strong>
+</p>
+
+<textarea id="command"
+placeholder="मराठी / हिंदी / English मध्ये दुकानातील conversation लिहा..."></textarea>
+
+<div class="actions">
+<button class="primary" onclick="analyze()">🤖 Analyze Sale</button>
+<button class="secondary" onclick="voice()">🎤 Voice</button>
+<button class="secondary" onclick="loadData()">🔄 Refresh</button>
+</div>
+
+<div id="chat" class="chat">
+<div class="msg ai">नमस्कार! तुमच्या दुकानाचा हिशोब सांभाळायला मी तयार आहे. 👋</div>
+</div>
+</div>
+
+<div class="section card">
+<h2>⚡ Quick Actions</h2>
+<div class="actions">
+<button class="secondary" onclick="showStock()">📦 Stock</button>
+<button class="secondary" onclick="showCustomers()">👥 Customers</button>
+<button class="secondary" onclick="showReport()">📊 Report</button>
+</div>
+</div>
+
+<div class="section" id="content"></div>
+
+<div class="footer">
+<div>© 2026 AI Shop Manager</div>
+<p>
+<a href="privacy.html">Privacy Policy</a>
+<a href="terms.html">Terms of Use</a>
+<a href="ai-disclaimer.html">AI Disclaimer</a>
+<a href="contact.html">Contact</a>
+</p>
+<div>Developed by Aditya G. Chudhari</div>
+</div>
+
+</div>
+
+<!-- SALE MODAL -->
+<div class="modal" id="saleModal">
+<div class="modalbox">
+<h2>🧾 Detected Sale</h2>
+
+<div id="saleItems"></div>
+
+<label>Customer</label>
+<input id="customer" placeholder="Customer name">
+
+<br><br>
+
+<label>Paid Amount</label>
+<input id="paid" type="number" value="0" oninput="calculateTotal()">
+
+<br><br>
+
+<div class="card">
+<strong>Total: ₹<span id="total">0</span></strong><br>
+<strong>Pending: ₹<span id="due">0</span></strong>
+</div>
+
+<div class="actions">
+<button class="primary" onclick="confirmSale()">✅ Confirm Sale</button>
+<button class="danger" onclick="closeModal()">Cancel</button>
+</div>
+</div>
+</div>
+
+<script>
+
+/*
+ IMPORTANT:
+ API key कधीही इथे ठेवू नका.
+
+ Backend deploy केल्यानंतर खालील URL बदला:
+ उदाहरण:
+ const API_BASE = "https://your-backend-domain.com";
+
+ सध्या "" असल्यास GitHub Pages च्या same-origin वर API शोधेल.
+*/
+
+const API_BASE = "";
+
+let proposal = null;
+
+function api(path, options={}){
+ return fetch(API_BASE + path,{
+   ...options,
+   headers:{
+     "Content-Type":"application/json",
+     ...(options.headers||{})
+   }
+ });
+}
+
+function addMessage(text,type="ai"){
+ const chat=document.getElementById("chat");
+ const div=document.createElement("div");
+ div.className="msg "+type;
+ div.textContent=text;
+ chat.appendChild(div);
+ chat.scrollTop=chat.scrollHeight;
+}
+
+async function analyze(){
+
+ const transcript=document.getElementById("command").value.trim();
+
+ if(!transcript){
+   alert("कृपया conversation लिहा किंवा Voice वापरा.");
+   return;
+ }
+
+ addMessage(transcript,"user");
+ addMessage("AI sale तपासत आहे...","ai");
+
+ try{
+
+   const res=await api("/api/analyze-conversation",{
+     method:"POST",
+     body:JSON.stringify({
+       transcript:transcript,
+       language:"mr-IN"
+     })
+   });
+
+   if(!res.ok) throw new Error("Backend unavailable");
+
+   const data=await res.json();
+
+   proposal=data.result;
+   openProposal(proposal);
+
+ }catch(e){
+
+   addMessage(
+     "⚠️ Backend अजून connect झालेला नाही. GitHub Pages frontend तयार आहे; Real AI वापरण्यासाठी FastAPI backend deploy करून API_BASE मध्ये त्याचा URL द्या.",
+     "ai"
+   );
+
+ }
+}
+
+function openProposal(data){
+
+ document.getElementById("saleModal").style.display="block";
+
+ document.getElementById("customer").value=data.customer||"";
+ document.getElementById("paid").value=data.paid||0;
+
+ const box=document.getElementById("saleItems");
+ box.innerHTML="";
+
+ (data.items||[]).forEach((item,i)=>{
+
+   const div=document.createElement("div");
+   div.className="item";
+
+   div.innerHTML=`
+   <label>Product</label>
+   <input id="product${i}" value="${escapeHtml(item.product)}">
+
+   <br><br>
+
+   <label>Quantity</label>
+   <input id="qty${i}" type="number" min="1"
+   value="${item.quantity}" oninput="calculateTotal()">
+
+   <br><br>
+
+   <label>Unit Price</label>
+   <input id="price${i}" type="number" min="0"
+   value="${item.unit_price||0}" oninput="calculateTotal()">
+   `;
+
+   box.appendChild(div);
+ });
+
+ calculateTotal();
+}
+
+function calculateTotal(){
+
+ if(!proposal) return;
+
+ let total=0;
+
+ (proposal.items||[]).forEach((item,i)=>{
+
+   const q=document.getElementById("qty"+i);
+   const p=document.getElementById("price"+i);
+
+   if(q && p){
+     total += Number(q.value||0)*Number(p.value||0);
+   }
+
+ });
+
+ document.getElementById("total").textContent=total.toFixed(2);
+
+ const paid=Number(document.getElementById("paid").value||0);
+
+ document.getElementById("due").textContent=
+ Math.max(total-paid,0).toFixed(2);
+}
+
+async function confirmSale(){
+
+ if(!proposal) return;
+
+ const items=[];
+
+ (proposal.items||[]).forEach((item,i)=>{
+
+   items.push({
+     product:document.getElementById("product"+i).value,
+     quantity:Number(document.getElementById("qty"+i).value),
+     unit_price:Number(document.getElementById("price"+i).value)
+   });
+
+ });
+
+ const sale={
+   customer:document.getElementById("customer").value||null,
+   items:items,
+   total:Number(document.getElementById("total").textContent),
+   paid:Number(document.getElementById("paid").value||0)
+ };
+
+ try{
+
+   const res=await api("/api/confirm-sale",{
+     method:"POST",
+     body:JSON.stringify(sale)
+   });
+
+   if(!res.ok){
+     const err=await res.text();
+     throw new Error(err);
+   }
+
+   const result=await res.json();
+
+   closeModal();
+
+   addMessage(
+    `✅ Sale confirmed. Total ₹${result.total}. Paid ₹${result.paid}. Pending ₹${result.pending}.`,
+    "ai"
+   );
+
+   loadData();
+
+ }catch(e){
+
+   alert(
+    "Sale save झाली नाही.\n\nBackend connection तपासा."
+   );
+
+ }
+}
+
+function closeModal(){
+ document.getElementById("saleModal").style.display="none";
+}
+
+async function loadData(){
+
+ try{
+
+   const res=await api("/api/report");
+
+   if(!res.ok) throw new Error();
+
+   const r=await res.json();
+
+   document.getElementById("sales").textContent=
+   "₹"+Number(r.sales||0).toFixed(0);
+
+   document.getElementById("orders").textContent=
+   r.orders||0;
+
+   document.getElementById("pending").textContent=
+   "₹"+Number(r.pending||0).toFixed(0);
+
+   document.getElementById("low").textContent=
+   (r.low_stock||[]).length;
+
+ }catch(e){
+
+   // Backend unavailable — keep demo values
+   document.getElementById("sales").textContent="₹0";
+   document.getElementById("orders").textContent="0";
+   document.getElementById("pending").textContent="₹0";
+   document.getElementById("low").textContent="0";
+
+ }
+}
+
+async function showStock(){
+
+ const content=document.getElementById("content");
+
+ content.innerHTML=`
+ <div class="card">
+ <h2>📦 Inventory</h2>
+ <p>Stock loading...</p>
+ </div>`;
+
+ try{
+
+   const res=await api("/api/stock");
+
+   if(!res.ok) throw new Error();
+
+   const data=await res.json();
+
+   let html=`
+   <div class="card">
+   <h2>📦 Inventory</h2>
+   <table>
+   <tr><th>Product</th><th>Price</th><th>Stock</th></tr>`;
+
+   data.forEach(p=>{
+     html+=`
+     <tr>
+     <td>${escapeHtml(p.name)}</td>
+     <td>₹${p.price}</td>
+     <td>${p.stock}</td>
+     </tr>`;
+   });
+
+   html+=`</table></div>`;
+
+   content.innerHTML=html;
+
+ }catch(e){
+
+   content.innerHTML=`
+   <div class="card">
+   <h2>📦 Inventory</h2>
+   <p>Backend connect झाल्यावर live stock येथे दिसेल.</p>
+   </div>`;
+
+ }
+}
+
+async function showCustomers(){
+
+ const content=document.getElementById("content");
+
+ try{
+
+   const res=await api("/api/customers");
+
+   if(!res.ok) throw new Error();
+
+   const data=await res.json();
+
+   let html=`
+   <div class="card">
+   <h2>👥 Customers / Udhar</h2>
+   <table>
+   <tr><th>Customer</th><th>Pending</th></tr>`;
+
+   data.forEach(c=>{
+     html+=`
+     <tr>
+     <td>${escapeHtml(c.name)}</td>
+     <td>₹${Number(c.pending||0).toFixed(2)}</td>
+     </tr>`;
+   });
+
+   html+=`</table></div>`;
+
+   content.innerHTML=html;
+
+ }catch(e){
+
+   content.innerHTML=`
+   <div class="card">
+   <h2>👥 Customers / Udhar</h2>
+   <p>Backend connect झाल्यावर customers येथे दिसतील.</p>
+   </div>`;
+
+ }
+}
+
+async function showReport(){
+
+ const content=document.getElementById("content");
+
+ try{
+
+   const res=await api("/api/report");
+
+   if(!res.ok) throw new Error();
+
+   const r=await res.json();
+
+   let low="";
+
+   (r.low_stock||[]).forEach(p=>{
+     low+=`<li>${escapeHtml(p.name)} — ${p.stock} left</li>`;
+   });
+
+   content.innerHTML=`
+   <div class="card">
+   <h2>📊 Today's Report</h2>
+   <p><strong>Sales:</strong> ₹${Number(r.sales||0).toFixed(2)}</p>
+   <p><strong>Orders:</strong> ${r.orders||0}</p>
+   <p><strong>Pending:</strong> ₹${Number(r.pending||0).toFixed(2)}</p>
+
+   <h3>⚠️ Low Stock</h3>
+   <ul>${low||"<li>No low-stock products</li>"}</ul>
+   </div>`;
+
+ }catch(e){
+
+   content.innerHTML=`
+   <div class="card">
+   <h2>📊 Report</h2>
+   <p>Backend connect झाल्यावर live report दिसेल.</p>
+   </div>`;
+
+ }
+}
+
+function voice(){
+
+ if(!("webkitSpeechRecognition" in window) &&
+    !("SpeechRecognition" in window)){
+
+   alert("तुमच्या browser मध्ये voice recognition उपलब्ध नाही.");
+   return;
+ }
+
+ const SpeechRecognition=
+ window.SpeechRecognition||window.webkitSpeechRecognition;
+
+ const recognition=new SpeechRecognition();
+
+ recognition.lang="mr-IN";
+ recognition.continuous=false;
+ recognition.interimResults=false;
+
+ recognition.onstart=()=>{
+   addMessage("🎤 ऐकत आहे...","ai");
+ };
+
+ recognition.onresult=(event)=>{
+
+   const text=event.results[0][0].transcript;
+
+   document.getElementById("command").value=text;
+
+   analyze();
+ };
+
+ recognition.onerror=()=>{
+   addMessage("⚠️ Voice input मध्ये समस्या आली.","ai");
+ };
+
+ recognition.start();
+}
+
+function escapeHtml(value){
+
+ return String(value||"")
+ .replace(/&/g,"&amp;")
+ .replace(/</g,"&lt;")
+ .replace(/>/g,"&
